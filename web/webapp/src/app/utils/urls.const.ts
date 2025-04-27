@@ -26,6 +26,8 @@ export const CommunityUrls = {
   GETALL_BY_DISTANCE_ORDER : BASE_URL + "/community/getallbydistance",
   CREATE_EVENT : BASE_URL + "/community/event/create",
   UPDATE_EVENT_SCHED : BASE_URL + "/community/event/update",
+  GETALL_TNX_HISTORY : BASE_URL + "/community/history/getbyid",
+  
 }
 
 export const ConfigUrls = {

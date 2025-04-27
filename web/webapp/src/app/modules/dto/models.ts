@@ -63,4 +63,6 @@ export class EventCreateDTO{
   usedItems?:ItemModel[];
   totalBill?:number;
   totalPaid?:number;
+  deposit?:number;
+  
 }

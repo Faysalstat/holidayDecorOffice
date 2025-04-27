@@ -8,5 +8,6 @@ router.get('/getall',communityController.getAllCommunities);
 router.get('/getallsorted',communityController.getAllSortedCommunities);
 router.get('/getallbydistance',communityController.getAllCommunitiesWithDistanceFromBase);
 router.get('/getbyid',communityController.getCommunityById);
+router.get('/history/getbyid',communityController.getAllTransactionHistoryByCommunityId);
 
 module.exports = router

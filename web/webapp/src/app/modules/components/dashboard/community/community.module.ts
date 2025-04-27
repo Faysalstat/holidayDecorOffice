@@ -10,9 +10,10 @@ import { MessageService } from 'primeng/api';
 import { SharedCompsModule } from '../shared-comps/shared-comps.module';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MatDialogModule } from '@angular/material/dialog';
+import { DetailsComponent } from './details/details.component';
 
 @NgModule({
-  declarations: [CreateComponent, ListComponent],
+  declarations: [CreateComponent, ListComponent, DetailsComponent],
   imports: [
     CommonModule,
     SharedCompsModule,
@@ -25,6 +26,7 @@ import { MatDialogModule } from '@angular/material/dialog';
       { path: 'list', component: ListComponent },
       { path: 'add', component: CreateComponent },
       { path: 'edit/:id', component: CreateComponent },
+      { path: 'details/:id', component: DetailsComponent },
     ]),
   ],
   providers: [MessageService,DialogService],

@@ -15,7 +15,7 @@
                         <th>CAM of Community</th>
                         <th>Phone</th>
                         <th>Email</th>
-                        <th>Actions</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tr *ngFor="let community of communityList; let i = index"
@@ -28,11 +28,15 @@
                     <td>{{ community.phone }}</td>
                     <td>{{ community.email }}</td>
                     <td>
-                        <button (click)="editCommunity(community.id)"
-                            class="bg-dd-primary btn btn-sm btn-warning">Edit</button>
-                        <!-- <button (click)="deleteCommunity(community)" class="btn btn-sm btn-danger">Delete</button> -->
-                        <!-- <button (click)="addCommunityEvent(community.id)" class="btn-danger btn btn-sm btn-warning">Add
-                            Event</button> -->
+                        <button mat-icon-button  (click)="viewCommunity(community.id)" >
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="editCommunity(community.id)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button  (click)="deleteCommunity(community.id)" >
+                            <mat-icon color="warn">delete</mat-icon>
+                        </button>
                     </td>
                 </tr>
             </table>

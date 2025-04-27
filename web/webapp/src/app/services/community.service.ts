@@ -39,5 +39,11 @@ export class CommunityService {
     params = params.append('configNames',queryParams.get('configNames'));
     return this.http.get(ConfigUrls.GET_ALL_BY_NAME,{params:params});
   }
+
+  public getAllTnxHistoryByCommunityId(id:number): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('id',id);
+    return this.http.get(CommunityUrls.GETALL_TNX_HISTORY,{params:params});
+  }
   
 }

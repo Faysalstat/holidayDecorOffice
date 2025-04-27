@@ -38,8 +38,10 @@ export class ListComponent implements OnInit {
   addCommunityEvent(communityId: any) {
     this.router.navigate(['community/add-event', communityId]); // Navigate to the edit route with the item ID
   }
-
-  deleteCommunity(community: CommunityDTO) {
+  viewCommunity(communityId: number) {
+    this.router.navigate(['community/details', communityId])
+  }
+  deleteCommunity(id: number) {
     // this.communityList = this.communityList.filter(c => c !== community);
   }
 }

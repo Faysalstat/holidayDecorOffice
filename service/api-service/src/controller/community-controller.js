@@ -87,3 +87,17 @@ exports.getAllCommunities = async (req, res, next) => {
     });
   }
 };
+exports.getAllTransactionHistoryByCommunityId = async (req, res, next) => {
+  try {
+    let response = await communityService.getAllTransactionHistoryByCommunityId(req);
+    return res.status(200).json({
+      message: "Communities Tnx History Retrieved",
+      body: response,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      message: "Not Found: " + error.message,
+      isSuccess: false,
+    });
+  }
+}

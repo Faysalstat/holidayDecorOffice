@@ -13,8 +13,8 @@ const TransactionHisory = require("./transaction-history");
 // Define Relationships
 Community.hasMany(EventSchedule);
 EventSchedule.belongsTo(Community);
-EventSchedule.hasOne(Billing);
-Billing.belongsTo(EventSchedule);
+// EventSchedule.hasOne(Billing);
+// Billing.belongsTo(EventSchedule);
 EventSchedule.hasMany(EventItemMapping);
 DecorationItem.hasMany(EventItemMapping);
 EventSchedule.hasMany(EventImageMapping);
@@ -25,7 +25,7 @@ Community.hasMany(TransactionHisory);
 module.exports = {
   User,
   Community,
-  Billing,
+  // Billing,
   AppConfig,
   SchedulerLog,
   EventSchedule,

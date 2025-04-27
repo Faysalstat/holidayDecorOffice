@@ -269,6 +269,7 @@ export class CreateComponent implements OnInit {
     payload.usedItems = this.usedItemList;
     payload.totalBill = this.totalBill;
     payload.totalPaid = this.totalPaid + this.deposit;
+    payload.deposit = this.deposit;
     if(this.isEdit){
       payload.id = this.eventId;
       this.updateEvent(payload);
@@ -317,7 +318,10 @@ export class CreateComponent implements OnInit {
       },
     })
   }
-  calcualteDueAmount(){
+  calculateDueAmount() {
+    this.totalBill = Number(this.totalBill) || 0;
+    this.totalPaid = Number(this.totalPaid) || 0;
+    this.deposit = Number(this.deposit) || 0;
     this.dueAmount = this.totalBill - this.totalPaid - this.deposit;
   }
 }

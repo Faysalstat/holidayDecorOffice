@@ -45,14 +45,14 @@
                 <mat-form-field class="input-field" appearance="outline">
                     <mat-label>Total Bill</mat-label>
                     <span appCurrency matTextPrefix>$ &nbsp;</span>
-                    <input placeholder="Title" (input)="calcualteDueAmount()" [ngModelOptions]="{standalone:true}" [(ngModel)]="totalBill" matInput>
+                    <input placeholder="Title" (input)="calculateDueAmount()" [ngModelOptions]="{standalone:true}" [(ngModel)]="totalBill" matInput>
                 </mat-form-field>
             </div>
             <div class="col-md-4">
                 <mat-form-field class="input-field" appearance="outline">
-                    <mat-label>Advance Payment</mat-label>
+                    <mat-label>{{isEdit?"Deposit":"Advance Payment"}}</mat-label>
                     <span appCurrency matTextPrefix>$ &nbsp;</span>
-                    <input placeholder="Title" (input)="calcualteDueAmount()" [ngModelOptions]="{standalone:true}" [(ngModel)]="deposit" matInput>
+                    <input placeholder="Title" (input)="calculateDueAmount()" [ngModelOptions]="{standalone:true}" [(ngModel)]="deposit" matInput>
                 </mat-form-field>
             </div>
             <div class="col-md-4">

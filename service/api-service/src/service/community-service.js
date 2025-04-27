@@ -3,6 +3,7 @@ const CommonService = require("../service/common-service");
 const moment = require("moment-timezone");
 const logger = require("../../logger");
 const EventSchedule = require("../model/event-schedule");
+const TransactionHisory = require("../model/transaction-history");
 exports.addCommunity = async (req, res) => {
   try {
     let payload = req.body;
@@ -19,8 +20,8 @@ exports.addCommunity = async (req, res) => {
       hasPower:payload.hasPower
     };
     let newCommunity = await Community.create(communityEntity);
-    return {newCommunity};
-
+    
+    return newCommunity;
   } catch (error) {
     logger.error(`Error occurred: ${error.message}`, { stack: error.stack });
     throw new Error("Error Occurred:", error);
@@ -241,4 +242,15 @@ exports.getAllCommunity = async (req, res) => {
     throw new Error("Error Occurred: " + error.message);
   }
 };
+
+exports.getAllTransactionHistoryByCommunityId = async (req) => {
+  try {
+    let params = req.query;
+    let accountHistory = await TransactionHisory.findAll({where:{communityId:params.id}});
+    return accountHistory;
+  } catch (error) {
+    logger.error(`Error occurred: ${error.message}`, { stack: error.stack });
+    throw new Error("Error Occurred: " + error.message);
+  }
+}
 

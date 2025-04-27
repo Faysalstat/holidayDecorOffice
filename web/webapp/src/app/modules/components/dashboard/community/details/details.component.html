@@ -1,0 +1,88 @@
+<div class="container bg-white">
+    <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
+    <div class="p-5 rounded">
+        <div class="row mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="text-left mt-4 flex-grow-1">Community Details</h2>
+                <div>
+                    <button class="btn btn-warning me-2" (click)="editCommunity()">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-secondary" (click)="goBack()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                </div>
+                <hr>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6 ">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>Community Name:</th>
+                            <td>{{communityDetails.communityName}}</td>
+                        </tr>
+                        <tr>
+                            <th>Address:</th>
+                            <td>{{communityDetails.communityAddress}}</td>
+                        </tr>
+                        <tr>
+                            <th>CAM of Community:</th>
+                            <td>{{communityDetails.camOfcommunity}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{communityDetails.email}}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{communityDetails.phone}}</td>
+                        </tr>
+                        <tr>
+                            <th>Has Power:</th>
+                            <td>{{communityDetails.hasPower?"YES":"NO"}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+              <!-- Button -->
+              <button class="btn btn-dark" (click)="showAccountHistoryRecords()">Show Account History</button>
+          
+              <!-- Table -->
+              <div *ngIf="showAccountHistory" class="mt-3">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>SN</th>
+                      <th>TNX Date</th>
+                      <th>Amount</th>
+                      <th>Remark</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngIf="accountHistory.length==0">
+                        <td class="text-center" colspan="4">No Transactions</td>
+                    </tr>
+                    <tr *ngFor="let item of accountHistory; let i = index">
+                      <td>{{ i + 1 }}</td>
+                      <td>{{ item.tnxDate }}</td>
+                      <td><span appCurrency>$ &nbsp;</span>{{ item.amount }}</td>
+                      <td>{{ item.remark }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
