@@ -1,0 +1,75 @@
+<div class="container bg-white mt-4">
+    <div class="mt-4 p-5 rounded">
+        <div class="d-flex align-items-center justify-content-between">
+            <h2>Decoration Items</h2>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-3">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Item Name</mat-label>
+                    <input placeholder="Config Name" [(ngModel)]="item.itemName"
+                        matInput />
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Quantity</mat-label>
+                    <input placeholder="Value" [(ngModel)]="item.quantity"
+                        matInput />
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Unit Type</mat-label>
+                    <mat-select [ngModelOptions]="{standalone:true}"
+                        [(ngModel)]="item.unitType">
+                        <mat-option *ngFor="let unit of units"
+                            [value]="unit.value">{{unit.label}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-3">
+                <button (click)="createItems()" class="btn-bg-primary mt-2">Add Item</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of itemList">
+                                <td>{{item.itemName}}</td>
+                                <td *ngIf="!item.isEdit">{{item.quantity}} {{item.unitType}}</td>
+                                <!-- <td *ngIf="item.isEdit">
+                                    <mat-form-field class="input-field" appearance="outline">
+                                        <mat-label>Quantity</mat-label>
+                                        <input placeholder="Value" [(ngModel)]="item.quantity"
+                                            matInput />
+                                    </mat-form-field>
+                                </td> -->
+                                <td class="text-end">
+                                    <!-- <button mat-icon-button  (click)="viewEvent(event.id)" >
+                                        <mat-icon>visibility</mat-icon>
+                                    </button> -->
+                                    <button mat-icon-button  (click)="onEdit(item)" >
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <!-- <button mat-icon-button  (click)="deleteEvent(event.id)" >
+                                        <mat-icon color="warn">delete</mat-icon>
+                                    </button> -->
+                                </td>
+                            </tr>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+<div class="container bg-white mt-4">
+    <div class="mt-4 p-5 rounded">
+        <div class="d-flex align-items-center justify-content-between">
+            <h2>Add Community</h2>
+            <div>
+            <button (click)="goBack()" class="btn btn-default">Go to List</button>
+            <!-- <button (click)="addSchedule()" class="btn add-schedule-btn ms-2">Add Schedule</button> -->
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <form [formGroup]="communityCreateForm" (keydown.enter)="$event.preventDefault()">
+                <div class="row">
+                    <div class="col-md-6">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Community Name</mat-label>
+                            <input placeholder="Community Name" formControlName="communityName" matInput>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-md-6">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Community Address</mat-label>
+                            <input placeholder="Community Address" formControlName="communityAddress" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Latitude</mat-label>
+                            <input placeholder="Latitude" formControlName="latitude" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Longitude</mat-label>
+                            <input placeholder="Longitude" formControlName="longitude" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Gate Code</mat-label>
+                            <input placeholder="Gate Code" formControlName="gateCode" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Lock Box Code</mat-label>
+                            <input placeholder="Lock Box Code" formControlName="lockBoxCode" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>CAM of Community</mat-label>
+                            <input placeholder="CAM of Community" formControlName="camOfcommunity" matInput>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Phone</mat-label>
+                            <input placeholder="Phone" formControlName="phone" matInput type="tel">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Email</mat-label>
+                            <input placeholder="Email" formControlName="email" matInput type="email">
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-center justify-content-end">
+                        <mat-slide-toggle class="custom-toggle" [(ngModel)]="hasPower" [ngModelOptions]="{standalone: true}">
+                            {{hasPower?"Has Power":"No Power"}}
+                        </mat-slide-toggle>
+                    </div>
+                    
+                    <!-- Submit Button Positioned to the Right -->
+                    <div class="col-12 d-flex justify-content-end mt-3" style="width: 100%;">
+                        <button (click)="onSubmit()" class="btn-bg-primary">{{isEdit?"Update Community":"Add Community"}}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    

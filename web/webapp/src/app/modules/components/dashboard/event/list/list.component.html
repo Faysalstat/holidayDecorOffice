@@ -1,0 +1,62 @@
+<div class="container bg-white mt-3">
+    <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
+    <div class="mt-4 p-5 rounded">
+        <div class="d-flex align-items-center justify-content-between">
+            <h2>Events List</h2>
+            <button (click)="addNew()" class="btn-bg-primary">Add New Event</button>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-3">
+                <mat-form-field class="input-field" appearance="outline">
+                  <mat-label>Status</mat-label>
+                  <mat-select (selectionChange)="fetchAllEvents()" [ngModelOptions]="{standalone:true}"
+                    [(ngModel)]="selectedStatus">
+                    <!-- <mat-option value="">All</mat-option> -->
+                    <mat-option value="active">Active</mat-option>
+                    <mat-option value="completed">Completed</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>SN</th>
+                        <th>Community Name</th>
+                        <th>Scheduled Dates</th>
+                        <th>Community Address</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-center" *ngIf="eventList.length==0" colspan="7">* No Active Events Available</td>
+                    </tr>
+                    <tr *ngFor="let event of eventList; let i = index">
+                        <td>{{ i + 1 }}</td>
+                        <td class="community-font">{{ event.communityName }}</td>
+                        <td>{{ event.scheduledStartDate | date: 'MM/dd/yyyy' }} - {{ event.scheduledEndDate | date: 'MM/dd/yyyy' }}</td>
+                        <td>{{ event.communityAddress }}</td>
+                        <td>{{ event.phone }}</td>
+                        <td>{{ event.email }}</td>
+                        <td>
+                            <button mat-icon-button  (click)="viewEvent(event.id)" >
+                                <mat-icon>visibility</mat-icon>
+                            </button>
+                            <button mat-icon-button  (click)="editEvent(event.id)" >
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button  (click)="deleteEvent(event.id)" >
+                                <mat-icon color="warn">delete</mat-icon>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

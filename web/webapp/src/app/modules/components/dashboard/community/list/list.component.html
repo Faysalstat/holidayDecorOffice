@@ -1,0 +1,41 @@
+<div class="container bg-white mt-3">
+    <div class="mt-4 p-5 rounded">
+        <div class="d-flex align-items-center justify-content-between">
+            <h2>Community List</h2>
+            <button (click)="addNew()" class="btn-bg-primary">Add New</button>
+        </div>
+        <hr>
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>SN</th>
+                        <th>Community Name</th>
+                        <th>Community Address</th>
+                        <th>CAM of Community</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tr *ngFor="let community of communityList; let i = index"
+                    [ngClass]="{ 'paused-row': community.isPaused }">
+                    <td>{{ i + 1 }}</td>
+                    <td class="community-font">{{ community.communityName }}</td>
+                    <td>{{ community.communityAddress }}</td>
+                    <td>{{ community.camOfcommunity }}</td>
+                    <!-- <td>{{ community.gateCode }}</td> -->
+                    <td>{{ community.phone }}</td>
+                    <td>{{ community.email }}</td>
+                    <td>
+                        <button (click)="editCommunity(community.id)"
+                            class="bg-dd-primary btn btn-sm btn-warning">Edit</button>
+                        <!-- <button (click)="deleteCommunity(community)" class="btn btn-sm btn-danger">Delete</button> -->
+                        <!-- <button (click)="addCommunityEvent(community.id)" class="btn-danger btn btn-sm btn-warning">Add
+                            Event</button> -->
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,245 @@
+<div class="container bg-white mt-4">
+    <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
+    <div class="mt-4 p-5 rounded">
+        <div class="d-flex align-items-center justify-content-between">
+            <h2>{{isEdit?"Update Community Event":"Add Community Event"}}</h2>
+        </div>
+        <hr>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Event Title</mat-label>
+                    <input placeholder="Title" [ngModelOptions]="{standalone:true}" [(ngModel)]="title" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Community</mat-label>
+                    <mat-select (selectionChange)="onSelectCommunity($event)" [ngModelOptions]="{standalone:true}"
+                        [(ngModel)]="selectedCommunity" [disabled]="isEdit">
+                        <mat-option *ngFor="let community of communityList"
+                            [value]="community.value">{{community.label}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field class="w-100" appearance="outline">
+                    <mat-label>Enter Scheduled Date Range</mat-label>
+                    <mat-date-range-input [rangePicker]="picker">
+                        <input matStartDate [ngModelOptions]="{standalone:true}" [(ngModel)]="scheduledStartDate" (dateChange)="onStartDateChange($event)" placeholder="Start date" />
+                        <input matEndDate [ngModelOptions]="{standalone:true}" [(ngModel)]="scheduledEndDate" (dateChange)="onEndDateChange($event)" placeholder="End date" />
+                    </mat-date-range-input>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+            </div>
+            <div class="col-md-12">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Event Description</mat-label>
+                    <textarea placeholder="description" [ngModelOptions]="{standalone:true}" [(ngModel)]="description"
+                        matInput></textarea>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Total Bill</mat-label>
+                    <span appCurrency matTextPrefix>$ &nbsp;</span>
+                    <input placeholder="Title" (input)="calcualteDueAmount()" [ngModelOptions]="{standalone:true}" [(ngModel)]="totalBill" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Advance Payment</mat-label>
+                    <span appCurrency matTextPrefix>$ &nbsp;</span>
+                    <input placeholder="Title" (input)="calcualteDueAmount()" [ngModelOptions]="{standalone:true}" [(ngModel)]="deposit" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Due Amount</mat-label>
+                    <span appCurrency matTextPrefix>$ &nbsp;</span>
+                    <input placeholder="Title" [readonly]="true" [ngModelOptions]="{standalone:true}" [(ngModel)]="dueAmount" matInput>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row mt-4 mb-4">
+            <h2 class="text-left mt-4">Community Details</h2>
+            <p class="mt-4" *ngIf="!showCommunityDetails">*No Community Selected</p>
+            <hr>
+            <div *ngIf="showCommunityDetails" class="col-md-12">
+                
+                <div class="row mb-3">
+                    <div class="col-md-3 font-weight-bold">Community Name:</div>
+                    <div class="col-md-3">{{ communityDetails.communityName || '-' }}</div>
+                    <div class="col-md-3 font-weight-bold">Address:</div>
+                    <div class="col-md-3">{{ communityDetails.communityAddress || '-' }}</div>
+
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 font-weight-bold">CAM of Community:</div>
+                    <div class="col-md-3">{{ communityDetails.camOfcommunity || '-' }}</div>
+                    <div class="col-md-3 font-weight-bold">Email:</div>
+                    <div class="col-md-3">{{ communityDetails.email || '-' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 font-weight-bold">Phone:</div>
+                    <div class="col-md-3">{{ communityDetails.phone || '-' }}</div>
+
+                    <div class="col-md-3 font-weight-bold">Gate Code:</div>
+                    <div class="col-md-3">{{ communityDetails.gateCode || '-' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3 font-weight-bold">Has Power:</div>
+                    <div class="col-md-3">{{ communityDetails.hasPower?"Yes":"No" }}</div>
+                    <div class="col-md-3 font-weight-bold">Lock Box Code:</div>
+                    <div class="col-md-3">{{ communityDetails.lockBoxCode || '-' }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <h2 class="text-left mt-4 mb-4">Add Decoration Items</h2>
+                    <hr>
+                    <div class="col-md-5">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Item Name</mat-label>
+                            <mat-select (selectionChange)="onSelectItem($event)" [ngModelOptions]="{standalone:true}"
+                                [(ngModel)]="itemModel">
+                                <mat-option *ngFor="let item of itemList"
+                                    [value]="item.value">{{item.label}}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-5">
+                        <mat-form-field class="input-field" appearance="outline">
+                            <mat-label>Used Quantity</mat-label>
+                            <input type="number" placeholder="Quantity" [(ngModel)]="itemModel.usedQuantity" matInput />
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <button (click)="addItem()" class="btn-size btn btn-dark mt-2">Add Item</button>
+                    </div>
+                    <div class="col-md-12 mt-4">
+                        <table class="table">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th class="text-center">Quantity Used</th>
+                                    <th class="text-end">Action</th> <!-- 👈 right-align header -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngIf="usedItemList.length==0">
+                                    <td colspan="3">*No Item added</td>
+                                </tr>
+                                <tr *ngFor="let item of usedItemList; let i = index">
+                                    <td>{{ item.itemName }}</td>
+                                    <td class="text-center">{{ item.usedQuantity }} {{item.unitType}}</td>
+                                    <td class="text-end"> <!-- 👈 right-align buttons -->
+                                        <button class="btn btn-sm btn-outline-primary me-2" (click)="editItem(i)">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" (click)="deleteItem(i)">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <h2 class="text-start m-0">Upload Images</h2>
+            <hr>
+            <div class="col-md-12">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Choose an image..." [value]="selectedFileName"
+                        readonly>
+                    <button class="btn  btn-dark" type="button" (click)="fileInput.click()">Browse</button>
+                    <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+                </div>
+                <div *ngIf="previewUrl" class="text-center">
+                    <img [src]="previewUrl" alt="Image Preview" class="img-fluid rounded shadow-sm mt-3"
+                        style="max-height: 250px; max-width: 300px;" />
+
+                    <div class="mt-3">
+                        <button *ngIf="previewUrl" type="button" (click)="uploadImage()" class="btn btn-dark me-2">
+                            Upload Image
+                        </button>
+                    </div>
+                </div>
+
+                <div *ngIf="uploadMessage" class="alert alert-info mt-3 text-center">
+                    {{ uploadMessage }}
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#uploadedImagesModal">
+                        Preview Images
+                    </button>
+                    <button type="button" (click)="onSubmit()" class="btn btn-warning">{{isEdit?"Update Event":"Create Event"}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- The Modal -->
+<div class="modal" id="uploadedImagesModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Uploaded Images</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <p class="text-center" *ngIf="uploadedImagesForPreview.length == 0"> No Image available to preview</p>
+                <div *ngIf="uploadedImagesForPreview.length > 0" class="mt-5">
+                    <!-- Carousel -->
+                    <div id="demo" class="carousel slide" data-bs-ride="carousel">
+                        <!-- Indicators/dots -->
+                        <div class="carousel-indicators">
+                            <button *ngFor="let image of uploadedImagesForPreview; let i = index" type="button"
+                                [attr.data-bs-target]="'#demo'" [attr.data-bs-slide-to]="i" [class.active]="i === 0"
+                                [attr.aria-current]="i === 0 ? 'true' : null" [attr.aria-label]="'Slide ' + (i + 1)">
+                            </button>
+                        </div>
+
+                        <!-- The slideshow/carousel -->
+                        <div class="carousel-inner">
+                            
+                            <div *ngFor="let image of uploadedImagesForPreview; let i = index" class="carousel-item"
+                                [class.active]="i === 0">
+                                <img [src]="image" alt="Uploaded Image" class="d-block mx-auto img-fluid"
+                                    style="max-height: 400px;">
+                            </div>
+                        </div>
+
+                        <!-- Left and right controls/icons -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div> -->
+
+        </div>
+    </div>
+</div>
