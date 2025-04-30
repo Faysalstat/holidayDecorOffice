@@ -24,11 +24,12 @@
                 <thead class="table-secondary">
                     <tr>
                         <th>SN</th>
+                        <th>Event Title</th>
                         <th>Community Name</th>
                         <th>Scheduled Dates</th>
                         <th>Community Address</th>
                         <th>Phone</th>
-                        <th>Email</th>
+                        <!-- <th>Email</th> -->
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -38,11 +39,12 @@
                     </tr>
                     <tr *ngFor="let event of eventList; let i = index">
                         <td>{{ i + 1 }}</td>
+                        <td>{{ event.title }}</td>
                         <td class="community-font">{{ event.communityName }}</td>
                         <td>{{ event.scheduledStartDate | date: 'MM/dd/yyyy' }} - {{ event.scheduledEndDate | date: 'MM/dd/yyyy' }}</td>
                         <td>{{ event.communityAddress }}</td>
                         <td>{{ event.phone }}</td>
-                        <td>{{ event.email }}</td>
+                        <!-- <td>{{ event.email }}</td> -->
                         <td>
                             <button mat-icon-button  (click)="viewEvent(event.id)" >
                                 <mat-icon>visibility</mat-icon>

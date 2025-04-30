@@ -92,4 +92,23 @@ export class EventDetailsComponent implements OnInit {
   goBack(){
     this.router.navigate(['events/list']);
   }
+  completeEvent(){
+    this.eventScheduleService.completeEventSchedule(this.eventId).subscribe({
+      next:(value)=> {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Event Completed',
+          detail: 'Successfully Completed',
+        });
+        this.router.navigate(["events/list"])
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.message,
+        });
+      },
+    })
+  }
 }

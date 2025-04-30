@@ -216,6 +216,7 @@ exports.getAllEventSchedule = async (req, res, next) => {
 
         eventList.push({
           id: event.id,
+          title:event.title,
           scheduledStartDate: event.scheduledStartDate,
           scheduledEndDate: event.scheduledEndDate,
           communityName: event.community.communityName,
@@ -318,3 +319,32 @@ exports.deleteEventSchedule = async (req, res, next) => {
     throw new Error("Not Deleted: " + error.message);
   }
 };
+
+exports.completeEvent = async(req) => {
+  let params = req.body;
+  try {
+    let event = await EventSchedule.findOne({
+      where: { id: params.id }
+    });
+
+    let usedItems = await EventItemMapping.findAll({ where: { eventScheduleId: params.id }, include: DecorationItem });
+
+    if (usedItems && usedItems.length > 0) {
+      for (let index = 0; index < usedItems.length; index++) {
+        const usedItem = usedItems[index];
+        const updatedQuantity = usedItem.decorationItem.quantity + usedItem.usedQuantity;
+
+        await DecorationItem.update(
+          { quantity: updatedQuantity },
+          { where: { id: usedItem.decorationItem.id } }
+        );
+      }
+    }
+    event.status = "completed";
+    event.save();
+    return "completed";
+
+  } catch (error) {
+    throw new Error("Event Not complted. Error: " + error.message);
+  }
+}

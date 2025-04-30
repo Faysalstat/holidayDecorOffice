@@ -71,3 +71,18 @@ exports.deleteEventSchedule = async (req, res, next) => {
     });
   }
 };
+
+exports.completeEvent = async (req, res, next) => {
+  try {
+    let response = await eventScheduleService.completeEvent(req);
+    return res.status(200).json({
+      message: "Event Successfully Completed",
+      body: response,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      message: "Not Found: " + error.message,
+      isSuccess: false,
+    });
+  }
+}

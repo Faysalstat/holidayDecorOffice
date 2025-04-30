@@ -30,4 +30,8 @@ export class EventScheduleService {
     params = params.append('id', id);
     return this.http.delete(EventScheduleUrls.DELETE, { params: params });
   }
+
+  public completeEventSchedule(id: number): Observable<any> {
+    return this.http.post(EventScheduleUrls.COMPLETE, { id: id });
+  }
 }

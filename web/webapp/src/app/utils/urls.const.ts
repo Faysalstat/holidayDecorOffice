@@ -1,4 +1,5 @@
 export const BASE_URL = "http://localhost:3000/api";
+// export const BASE_URL = "https://decor.doggyduty.live/api";
 
 
 export const AuthenticationUrls = {
@@ -42,6 +43,7 @@ export const EventScheduleUrls = {
   GET_BY_ID : BASE_URL + "/event/getbyid",
   UPDATE : BASE_URL + "/event/update",
   DELETE : BASE_URL + "/event/delete",
+  COMPLETE : BASE_URL + "/event/complete",
 }
 
 export const DecorationItemsUrls = {
