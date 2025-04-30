@@ -54,12 +54,12 @@
                 <div class="col-md-10 mb-3">{{ eventDetails.title || '-' }}</div>
                 <div class="col-md-2 font-weight-bold mb-3">Description:</div>
                 <div class="col-md-10 mb-3">{{ eventDetails.description || '-' }}</div>
-                <div class="col-md-1 font-weight-bold mb-3">Total Bill:</div>
-                <div class="col-md-3 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalBill || '-' }}</div>
-                <div class="col-md-1 font-weight-bold mb-3">Total Paid:</div>
-                <div class="col-md-3 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalPaid || '-' }}</div>
-                <div class="col-md-1 font-weight-bold mb-3">Due:</div>
-                <div class="col-md-3 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalBill - eventDetails.totalPaid || '-' }}</div>
+                <div class="col-md-2 font-weight-bold mb-3">Total Bill:</div>
+                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalBill || '-' }}</div>
+                <div class="col-md-2 font-weight-bold mb-3">Total Paid:</div>
+                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalPaid || '-' }}</div>
+                <div class="col-md-2 font-weight-bold mb-3">Due:</div>
+                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalBill - eventDetails.totalPaid || '-' }}</div>
             </div>
         </div>
         <div class="row">

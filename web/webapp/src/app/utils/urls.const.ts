@@ -1,5 +1,5 @@
-export const BASE_URL = "http://localhost:3000/api";
-// export const BASE_URL = "https://decor.doggyduty.live/api";
+// export const BASE_URL = "http://localhost:3000/api";
+export const BASE_URL = "https://decor.doggyduty.live/api";
 
 
 export const AuthenticationUrls = {
