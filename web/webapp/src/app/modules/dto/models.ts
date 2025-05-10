@@ -49,8 +49,19 @@ export class DecorationItemDTO{
 export class ItemModel{
   id?:number;
   itemName?: string;
-  usedQuantity?:number;
+  requiredQuantity:number = 0;
+  usedQuantity:number = 0;
   unitType?:string;
+  isEdit: boolean = false;
+}
+export class ItemUpdateModel{
+  id?:number;
+  itemName?: string;
+  requiredQuantity:number = 0;
+  usedQuantity:number = 0;
+  newUsedQuantity:number = 0;
+  unitType?:string;
+  isEdit: boolean = false;
 }
 export class EventCreateDTO{
   id?:number;
@@ -60,7 +71,9 @@ export class EventCreateDTO{
   scheduledStartDate?:string;
   scheduledEndDate?:string;
   uploadedImages?:string[];
+  newUploadedImages?:string[];
   usedItems?:ItemModel[];
+  newUsedItems?:ItemModel[];
   totalBill?:number;
   totalPaid?:number;
   deposit?:number;

@@ -1,0 +1,67 @@
+.invoice-wrapper {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    background: #fff;
+  }
+  
+  .invoice-title {
+    color: #3f51b5;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .top-section {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .community-info,
+  .date-info {
+    flex: 1 1 45%;
+  }
+  
+  .community-info h3 {
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+  
+  .community-info p,
+  .date-info p {
+    margin: 0.2rem 0;
+    font-size: 0.95rem;
+  }
+  
+  .billing {
+    margin-top: 1.5rem;
+  }
+  
+  .billing h3 {
+    margin-bottom: 0.5rem;
+    color: #555;
+  }
+  
+  .billing-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 1.05rem;
+  }
+  
+  .billing-row.due {
+    font-weight: bold;
+    color: #d32f2f;
+  }
+  
+  .spacer {
+    margin: 1.5rem 0;
+  }
+  .action-buttons{
+    
+  }
+  

@@ -30,7 +30,7 @@
                 </mat-form-field>
             </div>
             <div class="col-md-3">
-                <button (click)="createItems()" class="btn-bg-primary mt-2">Add Item</button>
+                <button (click)="createItems()" class="btn-bg-primary mt-2">{{isEdit?'Update Item':'Add Item'}}</button>
             </div>
         </div>
         <div class="row">

@@ -27,6 +27,7 @@
     "@fullcalendar/interaction": "^6.0.3",
     "@fullcalendar/timegrid": "^6.0.3",
     "chart.js": "^3.3.2",
+    "html2pdf.js": "^0.10.3",
     "jspdf": "^3.0.0",
     "jspdf-autotable": "^5.0.2",
     "moment": "^2.30.1",

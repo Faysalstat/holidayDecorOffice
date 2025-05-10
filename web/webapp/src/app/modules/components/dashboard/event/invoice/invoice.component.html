@@ -1,0 +1,43 @@
+<mat-card class="invoice-wrapper" id="invoiceContent">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h2 class="invoice-title">Invoice for event: {{ invoice.title }}</h2>
+        <div>
+            <button mat-raised-button color="primary" (click)="downloadInvoice()">Download PDF</button>
+        </div>
+    </div>
+
+
+    <div class="top-section">
+        <div class="community-info">
+            <h3>Community Details</h3>
+            <p><strong>Name:</strong> {{ invoice.communityName }}</p>
+            <p><strong>Address:</strong> {{ invoice.communityAddress }}</p>
+            <p><strong>Phone:</strong> {{ invoice.phone }}</p>
+            <p><strong>Email:</strong> {{ invoice.email }}</p>
+        </div>
+
+        <div class="date-info">
+            <p><strong>Date:</strong> {{ invoice.invoiceDate }}</p>
+            <p><strong>Start Date:</strong> {{ invoice.scheduledStartDate }}</p>
+            <p><strong>End Date:</strong> {{ invoice.scheduledEndDate }}</p>
+        </div>
+    </div>
+
+    <mat-divider class="spacer"></mat-divider>
+
+    <div class="billing">
+        <h3>Billing Summary</h3>
+        <div class="billing-row">
+            <span>Total Bill:</span>
+            <strong>{{ invoice.totalBill | currency }}</strong>
+        </div>
+        <div class="billing-row">
+            <span>Total Paid:</span>
+            <strong>{{ invoice.totalPaid | currency }}</strong>
+        </div>
+        <div class="billing-row due">
+            <span>Total Due:</span>
+            <strong>{{ invoice.totalDue | currency }}</strong>
+        </div>
+    </div>
+</mat-card>

@@ -102,7 +102,7 @@
                 <div class="row">
                     <h2 class="text-left mt-4 mb-4">Add Decoration Items</h2>
                     <hr>
-                    <div class="col-md-5">
+                    <div class="col-md-3">
                         <mat-form-field class="input-field" appearance="outline">
                             <mat-label>Item Name</mat-label>
                             <mat-select (selectionChange)="onSelectItem($event)" [ngModelOptions]="{standalone:true}"
@@ -112,10 +112,10 @@
                             </mat-select>
                         </mat-form-field>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-3">
                         <mat-form-field class="input-field" appearance="outline">
-                            <mat-label>Used Quantity</mat-label>
-                            <input type="number" placeholder="Quantity" [(ngModel)]="itemModel.usedQuantity" matInput />
+                            <mat-label>Required Quantity</mat-label>
+                            <input type="number" placeholder="Quantity" [(ngModel)]="itemModel.requiredQuantity" matInput />
                         </mat-form-field>
                     </div>
                     <div class="col-md-2 text-end">
@@ -126,17 +126,19 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>Item Name</th>
+                                    <th class="text-center">Required Quantity</th>
                                     <th class="text-center">Quantity Used</th>
                                     <th class="text-end">Action</th> <!-- 👈 right-align header -->
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngIf="usedItemList.length==0">
-                                    <td colspan="3">*No Item added</td>
+                                    <td colspan="4">*No Item added</td>
                                 </tr>
                                 <tr *ngFor="let item of usedItemList; let i = index">
                                     <td>{{ item.itemName }}</td>
-                                    <td class="text-center">{{ item.usedQuantity }} {{item.unitType}}</td>
+                                    <td class="text-center">{{ item.requiredQuantity || 0 }} {{item.unitType}}</td>
+                                    <td class="text-center">{{ item.usedQuantity || 0 }} {{item.unitType}}</td>
                                     <td class="text-end"> <!-- 👈 right-align buttons -->
                                         <button class="btn btn-sm btn-outline-primary me-2" (click)="editItem(i)">
                                             <i class="bi bi-pencil-fill"></i>

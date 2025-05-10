@@ -16,7 +16,7 @@ exports.addEventSchedule = async (req, res, next) => {
 
 exports.getAllEventSchedule = async (req, res, next) => {
   try {
-    let response = await eventScheduleService.getAllEventSchedule(req, res, next);
+    let response = await eventScheduleService.getAllEventSchedule(req);
     return res.status(200).json({
       message: "Event Schedule Retrieved",
       body: response,
@@ -57,6 +57,20 @@ exports.updateEventSchedule = async (req, res, next) => {
     });
   }
 };
+exports.updateItemMapping = async (req, res, next) => {
+  try {
+    let response = await eventScheduleService.updateItemMapping(req, res, next);
+    return res.status(200).json({
+      message: "Event Schedule Updated",
+      body: response,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      message: "Not Found: " + error.message,
+      isSuccess: false,
+    });
+  }
+};
 exports.deleteEventSchedule = async (req, res, next) => {
   try {
     let response = await eventScheduleService.deleteEventSchedule(req, res, next);
@@ -75,6 +89,21 @@ exports.deleteEventSchedule = async (req, res, next) => {
 exports.completeEvent = async (req, res, next) => {
   try {
     let response = await eventScheduleService.completeEvent(req);
+    return res.status(200).json({
+      message: "Event Successfully Completed",
+      body: response,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      message: "Not Found: " + error.message,
+      isSuccess: false,
+    });
+  }
+}
+
+exports.getSummary = async (req,res,next) =>{
+  try {
+    let response = await eventScheduleService.getEventScheduledSummary(req);
     return res.status(200).json({
       message: "Event Successfully Completed",
       body: response,

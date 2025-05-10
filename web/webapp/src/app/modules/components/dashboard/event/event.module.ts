@@ -11,6 +11,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { InvoiceComponent } from './invoice/invoice.component';
 
 
 
@@ -18,7 +20,8 @@ import { DialogService } from 'primeng/dynamicdialog';
   declarations: [
     ListComponent,
     CreateComponent,
-    EventDetailsComponent
+    EventDetailsComponent,
+    InvoiceComponent
   ],
   imports: [
       CommonModule,
@@ -28,6 +31,7 @@ import { DialogService } from 'primeng/dynamicdialog';
       MaterialModule,
       ToastModule,
       MatDialogModule,
+      InputTextModule,
       RouterModule.forChild([
         { path: 'list', component: ListComponent },
         { path: 'create', component: CreateComponent },

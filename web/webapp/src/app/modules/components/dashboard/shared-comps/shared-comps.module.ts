@@ -5,12 +5,20 @@ import { FormsModule } from '@angular/forms';
 import { ToastModule } from 'primeng/toast';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { CurrencyDirective } from 'src/app/directives/currency.directive';
+import { EventDetailsComponent } from './event-details/event-details.component';
+import { ImageModalComponent } from './comps/image-modal-component';
+import { ItemModalComponent } from './comps/item-modal-component';
+import { GalleriaModule } from 'primeng/galleria';
+import { TableModule } from 'primeng/table';
 
 
 
 @NgModule({
   declarations: [
-    CurrencyDirective
+    CurrencyDirective,
+    EventDetailsComponent,
+    ImageModalComponent,
+    ItemModalComponent
   ],
   imports: [
     CommonModule,
@@ -18,10 +26,14 @@ import { CurrencyDirective } from 'src/app/directives/currency.directive';
     MaterialModule,
     ToastModule,
     PanelMenuModule,
+    TableModule
     
   ],
   exports: [
-    CurrencyDirective
+    CurrencyDirective,
+    EventDetailsComponent,
+    ImageModalComponent,
+    ItemModalComponent
   ]
 })
 export class SharedCompsModule { }

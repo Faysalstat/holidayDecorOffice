@@ -11,21 +11,26 @@ import { EventScheduleService } from 'src/app/services/event-schedule.service';
   styleUrls: ['./list.component.scss'],
 })
 export class ListComponent implements OnInit {
-  eventList!: any[];
-  selectedStatus: string = 'active';
+  eventList: any[] = [];
+  selectedStatus: string = '';
+  selectedScheduledDate!: string;
   constructor(
     private router: Router,
     private eventScheduleService: EventScheduleService,
     private messageService: MessageService,
     private datePipe: DatePipe
-  ) {}
+  ) {
+    // Initialize any other properties if needed
+    const transformedDate = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    this.selectedScheduledDate = transformedDate ? transformedDate : '';
+  }
   ngOnInit(): void {
     this.fetchAllEvents();
   }
   fetchAllEvents() {
     const params: Map<string, any> = new Map();
     params.set('status', this.selectedStatus);
-    params.set('scheduledDate', '');
+    params.set('scheduledDate', this.selectedScheduledDate);
     this.eventScheduleService.getAllEventSchedule(params).subscribe({
       next: (res) => {
         console.log('Event List:', res);
@@ -70,5 +75,15 @@ export class ListComponent implements OnInit {
         });
       },
     });
+  }
+  onDateChange(event: any) {
+    if (event.value) {
+      this.selectedScheduledDate = this.datePipe
+        .transform(event.value, 'yyyy-MM-dd')
+        ?.toString()!;
+      console.log('Raw Date From Picker', event.value);
+      console.log('Formatted Date:', this.selectedScheduledDate);
+      this.fetchAllEvents();
+    }
   }
 }

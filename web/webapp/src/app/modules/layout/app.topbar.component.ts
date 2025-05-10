@@ -23,13 +23,13 @@ import { formatDate } from '@angular/common';
   providers: [DatePipe],
 })
 export class AppTopBarComponent implements OnInit {
-eventList!: any[];
-notificationCount = 0; // Replace this with actual data
-today = formatDate(
+  eventList!: any[];
+  notificationCount = 0; // Replace this with actual data
+  today = formatDate(
     new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
     'MM-dd-yyyy',
     'en-US'
-);
+  );
   @ViewChild('menubutton') menuButton!: ElementRef;
 
   @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
@@ -52,13 +52,10 @@ today = formatDate(
     this.router.navigate(['auth']);
   }
 
-  
   getAllEventSchedule() {
     const params: Map<string, any> = new Map();
     params.set('status', 'active');
-    params.set(
-      'scheduledDate', this.today
-    );
+    params.set('scheduledDate', this.today);
     this.eventScheduleService.getAllEventSchedule(params).subscribe({
       next: (res) => {
         console.log('Event List:', res);

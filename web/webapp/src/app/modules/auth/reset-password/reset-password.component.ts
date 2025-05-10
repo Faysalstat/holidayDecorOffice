@@ -22,7 +22,7 @@ export class ResetPasswordComponent implements OnInit {
       {
         id:['',Validators.required],
         username: ['', Validators.required],
-        newPassword: ['', [Validators.required, Validators.minLength(6)]],
+        newPassword: ['', [Validators.required, Validators.minLength(4)]],
         confirmPassword: ['', Validators.required],
       },
       { validators: this.passwordMatchValidator }

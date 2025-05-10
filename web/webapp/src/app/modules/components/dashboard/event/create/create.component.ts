@@ -166,7 +166,7 @@ export class CreateComponent implements OnInit {
       this.usedItemList = eventData.usedItems;
     }
   addItem(){
-    if(!this.itemModel.id || !this.itemModel.usedQuantity){
+    if(!this.itemModel.id || !this.itemModel.requiredQuantity){
       this.messageService.add({
         severity: 'error',
         summary: 'Invalid Form',
@@ -174,9 +174,9 @@ export class CreateComponent implements OnInit {
       });
       return;
     }
-    this.usedItemList.push({id:this.itemModel.id,itemName:this.itemModel.itemName,usedQuantity:this.itemModel.usedQuantity});
+    this.usedItemList.push({id:this.itemModel.id,itemName:this.itemModel.itemName,requiredQuantity:this.itemModel.requiredQuantity,usedQuantity:this.itemModel.usedQuantity,isEdit:false});
     if(this.isEdit){
-      this.newUsedItemList.push({id:this.itemModel.id,itemName:this.itemModel.itemName,usedQuantity:this.itemModel.usedQuantity});
+      this.newUsedItemList.push({id:this.itemModel.id,itemName:this.itemModel.itemName,usedQuantity:this.itemModel.usedQuantity,requiredQuantity:this.itemModel.requiredQuantity,isEdit:false});
     }
     this.itemModel = new ItemModel();
   }
@@ -252,6 +252,29 @@ export class CreateComponent implements OnInit {
       });
       return;
     }
+    payload.title = this.title;
+    payload.description = this.description;
+    payload.communityId = this.communityId;
+    payload.scheduledStartDate = this.scheduledStartDate;
+    payload.scheduledEndDate = this.scheduledEndDate;
+    payload.totalBill = this.totalBill;
+    payload.totalPaid = this.totalPaid + this.deposit;
+    payload.deposit = this.deposit;
+    if(this.isEdit){
+      payload.id = this.eventId;
+      payload.newUploadedImages = this.newUploadedImages;
+      payload.newUsedItems = this.newUsedItemList;
+      this.updateEvent(payload);
+    }else{
+      payload.uploadedImages = this.uploadedImages;
+      payload.usedItems = this.usedItemList;
+      this.createEvent(payload);
+    }
+    
+
+  }
+
+  createEvent(payload:any){
     if(this.usedItemList && this.usedItemList.length == 0){
       this.messageService.add({
         severity: 'error',
@@ -260,27 +283,6 @@ export class CreateComponent implements OnInit {
       });
       return;
     }
-    payload.title = this.title;
-    payload.description = this.description;
-    payload.communityId = this.communityId;
-    payload.scheduledStartDate = this.scheduledStartDate;
-    payload.scheduledEndDate = this.scheduledEndDate;
-    payload.uploadedImages = this.uploadedImages;
-    payload.usedItems = this.usedItemList;
-    payload.totalBill = this.totalBill;
-    payload.totalPaid = this.totalPaid + this.deposit;
-    payload.deposit = this.deposit;
-    if(this.isEdit){
-      payload.id = this.eventId;
-      this.updateEvent(payload);
-    }else{
-      this.createEvent(payload);
-    }
-    
-
-  }
-
-  createEvent(payload:any){
     this.eventScheduleService.createEventSchedule(payload).subscribe({
       next:(value)=> {
         this.messageService.add({

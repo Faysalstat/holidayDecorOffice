@@ -13,11 +13,22 @@
                   <mat-select (selectionChange)="fetchAllEvents()" [ngModelOptions]="{standalone:true}"
                     [(ngModel)]="selectedStatus">
                     <!-- <mat-option value="">All</mat-option> -->
+                    <mat-option value="">All</mat-option>
                     <mat-option value="active">Active</mat-option>
                     <mat-option value="completed">Completed</mat-option>
                   </mat-select>
                 </mat-form-field>
-              </div>
+            </div>
+            <div class="col-md-4">
+                <mat-form-field class="input-field" appearance="outline">
+                  <mat-label>Scheduled Date</mat-label>
+                  <input (dateChange)="onDateChange($event)" [ngModelOptions]="{standalone:true}"
+                    [(ngModel)]="selectedScheduledDate" matInput [matDatepicker]="startDate" 
+                    [disabled]="selectedStatus !== 'active'" required>
+                  <mat-datepicker-toggle matIconSuffix [for]="startDate"></mat-datepicker-toggle>
+                  <mat-datepicker #startDate></mat-datepicker>
+                </mat-form-field>
+            </div>
         </div>
         <div class="table-responsive">
             <table class="table">
@@ -49,10 +60,10 @@
                             <button mat-icon-button  (click)="viewEvent(event.id)" >
                                 <mat-icon>visibility</mat-icon>
                             </button>
-                            <button mat-icon-button  (click)="editEvent(event.id)" >
+                            <button [disabled]="event.status=='completed'" mat-icon-button  (click)="editEvent(event.id)" >
                                 <mat-icon>edit</mat-icon>
                             </button>
-                            <button mat-icon-button  (click)="deleteEvent(event.id)" >
+                            <button [disabled]="event.status=='completed'" mat-icon-button  (click)="deleteEvent(event.id)" >
                                 <mat-icon color="warn">delete</mat-icon>
                             </button>
                         </td>

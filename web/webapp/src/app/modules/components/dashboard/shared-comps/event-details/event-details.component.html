@@ -5,15 +5,13 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="text-left mt-4 flex-grow-1">Community Details</h2>
                 <div>
-                    <button *ngIf="isActive" class="btn btn-warning me-2" (click)="editEvent()">
+                    <button class="btn btn-warning me-2" (click)="editEvent()">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-secondary me-2" (click)="goBack()">
                         <i class="fas fa-arrow-left"></i> Back
                     </button>
-                    <button *ngIf="isActive" class="btn btn-info me-2" (click)="completeEvent()">Complete Event
-                    </button>
-                    <button *ngIf="!isActive" class="btn btn-info me-2" (click)="showInvoice()">Download Invoice
+                    <button class="btn btn-info me-2" (click)="completeEvent()">Complete Event
                     </button>
                 </div>
             </div>
@@ -49,50 +47,39 @@
             </div>
         </div>
         <div class="col-md-12">
-            
             <h2 class="text-left mt-4">Event Details</h2>
             <hr>
             <div class="row mb-3">
                 <div class="col-md-2 font-weight-bold mb-3">Event Title:</div>
-                <div class="col-md-10 mb-3">{{ eventDetails?.title || '-' }}</div>
+                <div class="col-md-10 mb-3">{{ eventDetails.title || '-' }}</div>
                 <div class="col-md-2 font-weight-bold mb-3">Description:</div>
-                <div class="col-md-10 mb-3">{{ eventDetails?.description || '-' }}</div>
+                <div class="col-md-10 mb-3">{{ eventDetails.description || '-' }}</div>
                 <div class="col-md-2 font-weight-bold mb-3">Total Bill:</div>
-                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails?.totalBill || '-' }}</div>
+                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalBill || '-' }}</div>
                 <div class="col-md-2 font-weight-bold mb-3">Total Paid:</div>
-                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails?.totalPaid || '-' }}</div>
+                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalPaid || '-' }}</div>
                 <div class="col-md-2 font-weight-bold mb-3">Due:</div>
-                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails?.totalBill - eventDetails?.totalPaid || '-' }}</div>
+                <div class="col-md-2 mb-3"><span appCurrency>$ &nbsp;</span>{{ eventDetails.totalBill - eventDetails.totalPaid || '-' }}</div>
             </div>
         </div>
         <div class="row">
-            <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
-                <h2 class="text-left ">Used Decoration Items</h2>
-                <div>
-                    <button *ngIf="isActive" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#itemList">Update Useage</button>
-                </div>
-            </div>
+            <h2 class="text-left mt-4 mb-4">Used Decoration Items</h2>
             <hr>
             <div class="col-md-12 mt-4">
                 <table class="table">
                     <thead class="table-dark">
                         <tr>
                             <th>Item Name</th>
-                            <th class="text-center">Required</th>
-                            <th class="text-center">Used</th>
-                            <th class="text-center">Available</th>
+                            <th class="text-center">Quantity Used</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngIf="usedItemList.length==0">
-                            <td colspan="5">*No Item added</td>
+                            <td colspan="3">*No Item added</td>
                         </tr>
                         <tr *ngFor="let item of usedItemList; let i = index">
                             <td>{{ item.itemName }}</td>
-                            <td class="text-center">{{ item.requiredQuantity || 0 }} {{item.unitType}}</td>
-                            <td class="text-center">{{ item.usedQuantity || 0 }} {{item.unitType}}</td>
-                            <td class="text-center">{{ item.requiredQuantity - item.usedQuantity || 0 }} {{item.unitType}}</td>
-                            
+                            <td class="text-center">{{ item.usedQuantity }}  {{item.unitType}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -111,48 +98,4 @@
         </div>
     </div>
 </div>
-<!-- The Modal -->
-<div class="modal" id="itemList">
-    <div class="modal-dialog">
-      <div class="modal-content">
-  
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Update Usage</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-  
-        <!-- Modal body -->
-        <div class="modal-body">
-            <div class="row mb-3" *ngFor="let item of usedItemList">
-            <div class="col-md-4 font-weight-bold">{{ item.itemName }}</div>
-            <div class="col-md-8">
-                <div>
-                    <input 
-                        style="width: 100%;" 
-                        type="number" 
-                        placeholder="Enter Quantity" 
-                        pInputText 
-                        [(ngModel)]="item.newUsedQuantity" 
-                        [max]="item.requiredQuantity - item.usedQuantity" 
-                        [min]="0" 
-                        [readonly]="item.newUsedQuantity > (item.requiredQuantity - item.usedQuantity)" />
-                    <small *ngIf="item.newUsedQuantity > (item.requiredQuantity - item.usedQuantity)" class="text-danger">
-                        Quantity exceeds available limit.
-                    </small>
-                </div>
-            </div>
-            </div>
-        </div>
-  
-        <!-- Modal footer -->
-        <div class="modal-footer">
-            <div class="d-flex justify-content-between align-items-center">
-                <button class="btn btn-dark me-2" data-bs-dismiss="modal" (click)="updateUsedItem()">Update Useage</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-  
-      </div>
-    </div>
-  </div>
+<!-- <div class="container py-4"> -->

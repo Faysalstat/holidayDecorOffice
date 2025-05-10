@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MessageService } from 'primeng/api';
 import { DecorationItemService } from 'src/app/services/decoration-item.service';
 
 @Component({
@@ -10,10 +11,16 @@ export class DecorationItemsComponent implements OnInit {
   itemList!:any[];
   item!:any;
   units:any[] = []
-  constructor(private decorationItemService:DecorationItemService){
+  isEdit: boolean = false;
+  constructor(
+    private decorationItemService:DecorationItemService,
+    private messageService:MessageService
+  ){
     this.item = {
+      id:"",
       itemName:"",
-      quantity:0
+      quantity:0,
+      unitType: "PIECE"
     };
     this.units = [
       {label:"Piece",value:"PIECE"},
@@ -32,7 +39,7 @@ export class DecorationItemsComponent implements OnInit {
         let items = res.body;
         this.itemList = [];
         items.map((item:any)=>{
-          this.itemList.push({itemName:item.itemName,quantity:item.quantity,isEdit:false,newQuantity:0,unitType:item.unitType})
+          this.itemList.push({id:item.id,itemName:item.itemName,quantity:item.quantity,isEdit:false,newQuantity:0,unitType:item.unitType})
         })
         
       },
@@ -44,18 +51,57 @@ export class DecorationItemsComponent implements OnInit {
 
   createItems(){
     let payload = this.item;
-    this.decorationItemService.createDecorationItem(payload).subscribe({
-      next:(res)=>{
-        console.log(res);
-        this.item = {
-          itemName:"",
-          quantity:0
-        } 
-        this.getAllItems();
-      }
-    })
+    if(this.isEdit){
+      console.log("Update item Model", payload)
+      this.decorationItemService.updateDecorationItem(payload).subscribe({
+        next: (res) => {
+         console.log(res);
+         this.messageService.add({
+           severity: 'success',
+           summary: 'Updated',
+           detail: 'Successfully Updated',
+         });
+         this.item.quantity = 0;
+         this.item.itemName= '';
+       },
+       error: (err) => {
+         this.messageService.add({
+           severity: 'error',
+           summary: 'Error',
+           detail: err.message,
+         });
+       },
+     })
+    }else{
+      this.decorationItemService.createDecorationItem(payload).subscribe({
+        next: (res) => {
+         console.log(res);
+         this.messageService.add({
+           severity: 'success',
+           summary: 'Created',
+           detail: 'Successfully Created',
+         });
+         this.item.quantity = 0;
+         this.item.itemName= '';
+       },
+       error: (err) => {
+         this.messageService.add({
+           severity: 'error',
+           summary: 'Error',
+           detail: err.message,
+         });
+       },
+     })
+    }
+    this.getAllItems();
   }
   onEdit(item:any){
-
+    this.item = {
+      id:item.id,
+      itemName:item.itemName,
+      quantity:item.quantity,
+      unitType:item.unitType
+    };
+    this.isEdit = true;
   }
 }

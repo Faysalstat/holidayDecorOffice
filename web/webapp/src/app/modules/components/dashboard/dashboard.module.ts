@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard.component';
 import { ChartModule } from 'primeng/chart';
@@ -15,6 +15,9 @@ import { ToastModule } from 'primeng/toast';
 import { AppConfigComponent } from './app-config/app-config.component';
 import { SharedCompsModule } from './shared-comps/shared-comps.module';
 import { DecorationItemsComponent } from './decoration-items/decoration-items.component';
+import { CardModule } from 'primeng/card';
+import { GalleriaModule } from 'primeng/galleria';
+import { GallaryComponent } from './gallary/gallary.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -28,9 +31,11 @@ import { DecorationItemsComponent } from './decoration-items/decoration-items.co
         ButtonModule,
         DashboardsRoutingModule,
         MaterialModule,
-        SharedCompsModule
+        SharedCompsModule,
+        CardModule,
+        GalleriaModule
     ],
-    declarations: [DashboardComponent, AppConfigComponent, DecorationItemsComponent],
-    providers:[MessageService]
+    declarations: [DashboardComponent, AppConfigComponent, DecorationItemsComponent,GallaryComponent],
+    providers:[MessageService,DatePipe]
 })
 export class DashboardModule { }

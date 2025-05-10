@@ -11,12 +11,14 @@ const EventItemMapping = db.sequelize.define(
       allowNull: false,
       primaryKey: true,
     },
-
-    usedQuantity:{
-      type:Sequelize.INTEGER
+    requiredQuantity: {
+      type: Sequelize.INTEGER,
+    },
+    usedQuantity: {
+      type: Sequelize.INTEGER,
     },
   },
-  
+
   {
     freezeTableName: true,
   }

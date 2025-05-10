@@ -7,6 +7,7 @@ const uploadService = require("./upload-file-service");
 const db = require("../connector/db-connector");
 const TransactionHisory = require("../model/transaction-history");
 const moment = require("moment-timezone");
+const { Op } = require("sequelize");
 
 exports.addEventSchedule = async (req) => {
   let payload = req.body;
@@ -49,13 +50,14 @@ exports.addEventSchedule = async (req) => {
           where: { id: usedItem.id },
         });
         const updatedItem = {
-          quantity: existingItem.quantity - usedItem.usedQuantity,
+          quantity: existingItem.quantity - usedItem.requiredQuantity,
         };
         let updatedProduct = await DecorationItem.update(updatedItem, {
           where: { id: usedItem.id },
         });
         let createdItemMapping = await EventItemMapping.create({
-          usedQuantity: usedItem.usedQuantity,
+          requiredQuantity: usedItem.requiredQuantity || 0,
+          usedQuantity: usedItem.usedQuantity || 0,
           decorationItemId: usedItem.id,
           eventScheduleId: createdEvent.id,
         });
@@ -98,13 +100,15 @@ exports.updateEventSchedule = async (req, res, next) => {
         description: payload.description,
         totalPaid:payload.totalPaid
       };
-      let tnxModel = {
-        amount: payload.deposit,
-        tnxDate: moment().tz("America/New_York").format("MM-DD-YYYY"),
-        remark: "Advance Payment",
-        communityId: payload.communityId,
-      };
-      tnxHistory = await TransactionHisory.create(tnxModel, { transaction: t });
+      if(payload.deposit && payload.deposit>0){
+        let tnxModel = {
+          amount: payload.deposit,
+          tnxDate: moment().tz("America/New_York").format("MM-DD-YYYY"),
+          remark: "Advance Payment",
+          communityId: payload.communityId,
+        };
+        tnxHistory = await TransactionHisory.create(tnxModel, { transaction: t });
+      }
       let response = await EventSchedule.update(eventModel, {
         where: { id: payload.id },
         transaction: t,
@@ -123,14 +127,14 @@ exports.updateEventSchedule = async (req, res, next) => {
           );
         }
       }
-      if (payload.newUsedItemList && payload.newUsedItemList.length > 0) {
-        for (let index = 0; index < payload.newUsedItemList.length; index++) {
-          const usedItem = payload.newUsedItemList[index];
+      if (payload.newUsedItems && payload.newUsedItems.length > 0) {
+        for (let index = 0; index < payload.newUsedItems.length; index++) {
+          const usedItem = payload.newUsedItems[index];
           const existingItem = await DecorationItem.findOne({
             where: { id: usedItem.id },
           });
           const updatedItem = {
-            quantity: existingItem.quantity - usedItem.usedQuantity,
+            quantity: existingItem.quantity - usedItem.requiredQuantity,
           };
           let updatedProduct = await DecorationItem.update(updatedItem, {
             where: { id: usedItem.id },
@@ -138,7 +142,8 @@ exports.updateEventSchedule = async (req, res, next) => {
           });
           let createdItemMapping = await EventItemMapping.create(
             {
-              usedQuantity: usedItem.usedQuantity,
+              requiredQuantity: usedItem.requiredQuantity || 0,
+              usedQuantity: usedItem.usedQuantity || 0,
               decorationItemId: usedItem.id,
               eventScheduleId: payload.id,
             },
@@ -157,34 +162,43 @@ exports.updateEventSchedule = async (req, res, next) => {
     throw new Error("Not Updated: " + error.message);
   }
 };
-exports.getAllEventSchedule = async (req, res, next) => {
+exports.getAllEventSchedule = async (req) => {
   try {
     let params = req.query;
     let query = {};
-    if (params.status) {
+    if (params.status || params.status!='') {
       query.status = params.status.toLowerCase();
-    } else {
-      query.status = "active";
     }
-    // if(params.scheduledStartDate && params.scheduledStartDate !== "") {
-    //   query.scheduledStartDate = params.scheduledStartDate;
-    // }
+    if (params.scheduledDate && params.scheduledDate !== "" && query.status =='active') {
+      query[Op.and] = [
+      {
+        scheduledStartDate: {
+        [Op.lte]: params.scheduledDate,
+        },
+      },
+      {
+        scheduledEndDate: {
+        [Op.gte]: params.scheduledDate,
+        },
+      },
+      ];
+    }
     let response = await EventSchedule.findAll({
       where: query,
       include: [
-        { model: Community },
-        { model: EventImageMapping },
-        { model: EventItemMapping, include: DecorationItem },
+      { model: Community },
+      { model: EventImageMapping },
+      { model: EventItemMapping, include: DecorationItem },
       ],
       order: [
-        [
-          EventSchedule.sequelize.fn(
-            "STR_TO_DATE",
-            EventSchedule.sequelize.col("scheduledStartDate"),
-            "%m-%d-%Y"
-          ),
-          "ASC",
-        ],
+      [
+        EventSchedule.sequelize.fn(
+        "STR_TO_DATE",
+        EventSchedule.sequelize.col("scheduledStartDate"),
+        "%m-%d-%Y"
+        ),
+        "ASC",
+      ],
       ],
     });
     let eventList = [];
@@ -227,6 +241,7 @@ exports.getAllEventSchedule = async (req, res, next) => {
           uploadedImages: imageList,
           totalBill: event.totalBill,
           totalPaid: event.totalPaid,
+          status:event.status
         });
       }
     }
@@ -260,7 +275,9 @@ exports.getEventScheduleById = async (params) => {
       for (let index = 0; index < response.eventItemMappings.length; index++) {
         const itemMap = response.eventItemMappings[index].dataValues;
         itemList.push({
+          id: itemMap.decorationItem.id,
           itemName: itemMap.decorationItem.itemName,
+          requiredQuantity: itemMap.requiredQuantity,
           usedQuantity: itemMap.usedQuantity,
           unitType: itemMap.decorationItem.unitType,
         });
@@ -281,6 +298,7 @@ exports.getEventScheduleById = async (params) => {
       uploadedImages: imageList,
       totalBill: response.totalBill,
       totalPaid: response.totalPaid,
+      status:response.status
     };
   } catch (error) {
     throw new Error("Not Found: " + error.message);
@@ -348,3 +366,126 @@ exports.completeEvent = async(req) => {
     throw new Error("Event Not complted. Error: " + error.message);
   }
 }
+
+exports.getEventScheduledSummary = async (req) => {
+  let params = req.query;
+  let currentDay = moment().tz("America/New_York").format("YYYY-MM-DD");
+  try {
+    let query = {};
+    if (params.status) {
+      query.status = params.status.toLowerCase();
+    } else {
+      query.status = "active";
+    }
+    if (params.scheduledDate && params.scheduledDate !== "") {
+      currentDay = params.scheduledDate;
+    }
+    query[Op.and] = [
+      {
+        scheduledStartDate: {
+          [Op.lte]: currentDay,
+        },
+      },
+      {
+        scheduledEndDate: {
+          [Op.gte]: currentDay,
+        },
+      },
+    ];
+    let response = await EventSchedule.findAll({
+      where: query,
+      include: [
+        { model: Community },
+        { model: EventImageMapping },
+        { model: EventItemMapping, include: DecorationItem },
+      ],
+      order: [
+        [
+          EventSchedule.sequelize.fn(
+            "STR_TO_DATE",
+            EventSchedule.sequelize.col("scheduledStartDate"),
+            "%m-%d-%Y"
+          ),
+          "ASC",
+        ],
+      ],
+    });
+
+    let communitySummary = [];
+    let allUsedItems = [];
+
+    if (response && response.length > 0) {
+      for (let index = 0; index < response.length; index++) {
+        const event = response[index].dataValues;
+        let imageList = [];
+        let itemList = [];
+
+        if (event.eventImageMappings && event.eventImageMappings.length > 0) {
+          for (let imgIndex = 0; imgIndex < event.eventImageMappings.length; imgIndex++) {
+            const imageMap = event.eventImageMappings[imgIndex].dataValues;
+            imageList.push(imageMap.imageName);
+          }
+        }
+
+        if (event.eventItemMappings && event.eventItemMappings.length > 0) {
+          for (let itemIndex = 0; itemIndex < event.eventItemMappings.length; itemIndex++) {
+            const itemMap = event.eventItemMappings[itemIndex].dataValues;
+            const usedItem = {
+              itemName: itemMap.decorationItem.itemName,
+              requiredQuantity:itemMap.requiredQuantity,
+              usedQuantity: itemMap.usedQuantity,
+              unitType: itemMap.decorationItem.unitType,
+            };
+            itemList.push(usedItem);
+            allUsedItems.push(usedItem);
+          }
+        }
+
+        communitySummary.push({
+          communityName: event.community.communityName,
+          title: event.title,
+          description: event.description,
+          uploadedImages: imageList,
+          usedItems: itemList,
+        });
+      }
+    }
+
+    // Group allUsedItems by itemName and merge quantities
+    let groupedUsedItems = allUsedItems.reduce((acc, item) => {
+      let existingItem = acc.find((i) => i.itemName === item.itemName);
+      if (existingItem) {
+        existingItem.requiredQuantity += item.requiredQuantity;
+        existingItem.usedQuantity += item.usedQuantity;
+      } else {
+        acc.push({ ...item });
+      }
+      return acc;
+    }, []);
+
+    return {
+      eventSummary: communitySummary,
+      requiredItemList: groupedUsedItems,
+    };
+  } catch (error) {
+    throw new Error("Summary Fetching Failed. Error: " + error.message);
+  }
+}
+exports.updateItemMapping = async (req) => {
+  let payload = req.body;
+  try {
+    if(payload.items && payload.items.length>0){
+      for (let index = 0; index < payload.items.length; index++) {
+        const element = payload.items[index];
+        let itemMappingToUpdate = await EventItemMapping.findOne({where:{decorationItemId :element.itemId,eventScheduleId : payload.eventId}});
+        itemMappingToUpdate.usedQuantity = itemMappingToUpdate.usedQuantity + element.newQuantityUsed;
+        itemMappingToUpdate.save();
+      }
+    }
+    
+    return "SUCCESS"
+  } catch (error) {
+    throw new Error("Update Failed. Error: " + error.message);
+  }
+}
+

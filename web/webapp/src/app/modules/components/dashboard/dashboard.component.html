@@ -1,8 +1,64 @@
-<div class="d-flex justify-content-between align-items-center mt-3">
-    <h2>WORK ORDERS</h2>
-    <button (click)="downloadWorkOrder()" class="btn-bg-primary">Download</button>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <mat-form-field class="input-field" appearance="outline">
+                <mat-label>Scheduled Date</mat-label>
+                <input (dateChange)="onDateChange($event)" [ngModelOptions]="{standalone:true}"
+                    [(ngModel)]="selectedScheduledDate" matInput [matDatepicker]="startDate" required>
+                <mat-datepicker-toggle matIconSuffix [for]="startDate"></mat-datepicker-toggle>
+                <mat-datepicker #startDate></mat-datepicker>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <h2>Today's Events</h2>
+                <!-- <button (click)="downloadWorkOrder()" class="btn-bg-primary">Download</button> -->
+            </div>
+            <h4 style="font-size: 1.2rem; color: #555; margin-top: 10px;">{{ getFormattedDate() }}</h4>
+            <hr />
+        </div>
+        <div class="col-md-4" *ngFor="let event of eventList" >
+            <div class="card event-card">
+                <div class="card-body" style="padding: 1rem;">
+                    <h5 class="card-title" style="margin: 0; font-size: 1.25rem; font-weight: bold;">{{
+                        event.communityName }}</h5>
+                    <h6 class="card-subtitle" style="margin: 0.5rem 0; font-size: 1rem; color: #666;">{{event.title}}
+                    </h6>
+                    <p style="margin: 0; color: #555;">
+                        {{event.description}}
+                    </p>
+                </div>
+                <div class="card-footer" style="padding: 1rem; border-top: 1px solid #ddd; display: flex; gap: 0.5rem;">
+                    <button type="button" class="btn btn-warning" (click)="openImageModal(event)">Preview Images</button>
+                    <button type="button" class="btn btn-dark" (click)="openItemModal(event)">Preview Items</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Item Required Today</h3>
+            <hr>
+            <p-table [value]="requiredItemList" [tableStyle]="{ 'min-width': '50rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Name</th>
+                        <th>Used</th>
+                        <th>Required</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td>{{ product.itemName }}</td>
+                        <td>{{ product.usedQuantity }} {{product.unitType}}</td>
+                        <td>{{ product.requiredQuantity -  product.usedQuantity}} {{product.unitType}}</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
 </div>
-<h4 style="font-size: 1.2rem; color: #555; margin-top: 10px;">{{ getFormattedDate() }}</h4>
-<hr />
-<!-- <app-task-details (fetchListEmmiter)="fetchJobOrder()" [communityList]="communityList"></app-task-details> -->
-<!-- </div> -->
+

@@ -50,127 +50,157 @@ export class PdfMakeService {
     });
   }
 
-  generateInvoicePDF(invoiceData: any) {
-    const doc = new jsPDF();
-    doc.addImage("assets/img/logo.png", "PNG", 5, 5, 50, 30); // Increased the size of the logo
-    doc.line(5, 40, 200,40); // Adjusted the line position to be below the larger logo
-
-    // doc.text('', 10, 55); // Adding a line break before the autoTable
-
-    autoTable(doc, {
-      startY: 50, // Start the table below the line
-      body: [
-      [
-        {
-        content:
-          'Reference: #INV' +
-          invoiceData.id +
-          '\nDate: ' +
-          invoiceData.invoiceDate,
-        styles: {
-          halign: 'left',
-        },
-        },
-      ],
-      ],
-      theme: 'plain',
+  generateInvoice(invoiceData: any): void {
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    doc.addImage('assets/img/holiday-decor-logo.png', 'PNG', 30, 30, 60, 60); // Increased the size of the logo
+    // Header
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Community Decor Services', 100, 40, {
+      align: 'left',
     });
 
-    autoTable(doc, {
-      startY: 50, // Start the table below the line
-      body: [
-        [
-          {
-            content:
-              '\n' +invoiceData.community.communityName+
-              '\n' +invoiceData.community.communityAddress+
-               '\nPhone:' + invoiceData.community.phone +
-              '\nEmail: ' + invoiceData.community.email,
-            styles: {
-              halign: 'right',
-            },
-          },
-        ],
-      ],
-      theme: 'plain',
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('123 Festive Street', 110, 60, { align: 'left' });
+    doc.text('Phone: (555) 123-4567', 110, 75, { align: 'left' });
+    doc.text('Email: info@decorservices.com', 110, 90, {
+      align: 'left',
     });
 
+    // Line
+    doc.setDrawColor(200);
+    doc.line(40, 105, pageWidth - 40, 105);
+
+    // Invoice Meta
+    let leftY = 125;
+    doc.setFont('helvetica', 'bold');
+    doc.text('INVOICE', 40, leftY);
+
+    doc.setFont('helvetica', 'normal');
+    leftY += 20;
+    doc.text(`Invoice #: ${invoiceData.invoiceNo}`, 40, leftY);
+    leftY += 15;
+    doc.text(`Date Issued: ${invoiceData.issueDate}`, 40, leftY);
+    leftY += 15;
+    doc.text(`Service Date: ${invoiceData.serviceDate}`, 40, leftY);
+
+    // Bill To
+    let rightY = 125;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Bill To:', pageWidth - 40, rightY, { align: 'right' });
+
+    doc.setFont('helvetica', 'normal');
+    rightY += 20;
+    doc.text(invoiceData.customer.name, pageWidth - 40, rightY, {
+      align: 'right',
+    });
+    rightY += 15;
+    doc.text(invoiceData.customer.address1, pageWidth - 40, rightY, {
+      align: 'right',
+    });
+    rightY += 15;
+    doc.text(invoiceData.customer.address2, pageWidth - 40, rightY, {
+      align: 'right',
+    });
+    const finalY = 200;
+    const totalsX = 40; // Adjusted to the left
+    const totalsY = finalY + 30;
+    const lineHeight = 24;
+
+    // Line
+    doc.setDrawColor(200);
+    doc.line(40, 200, pageWidth - 40, 200);
+    // Subtotal
+    doc.setFontSize(12);
+    doc.setTextColor(80, 80, 80); // dark gray
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Subtotal:`, totalsX, totalsY);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`$${invoiceData.subtotal.toFixed(2)}`, pageWidth - 40, totalsY, {
+      align: 'right',
+    });
+
+    // Tax
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Tax (${invoiceData.taxRate}%):`, totalsX, totalsY + lineHeight);
+    doc.setFont('helvetica', 'normal');
+    doc.text(
+      `$${invoiceData.tax.toFixed(2)}`,
+      pageWidth - 40,
+      totalsY + lineHeight,
+      { align: 'right' }
+    );
+
+    // Total with emphasis
+
+    doc.setTextColor(80, 80, 80); // dark gray
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Total:`, totalsX, totalsY + lineHeight * 2 );
+    doc.text(
+      `$${invoiceData.total.toFixed(2)}`,
+      pageWidth - 40,
+      totalsY + lineHeight * 2 ,
+      { align: 'right' }
+    );
+
+    doc.setTextColor(80, 80, 80); // dark gray
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Paid:`, totalsX, totalsY + lineHeight * 3);
     
+    doc.text(
+      `$${invoiceData.paid.toFixed(2)}`,
+      pageWidth - 40,
+      totalsY + lineHeight * 3,
+      { align: 'right' }
+    );
 
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: 'Services',
-            styles: {
-              halign: 'left',
-              fontSize: 14,
-            },
-          },
-        ],
-      ],
-      theme: 'plain',
-    });
+    // Line
+    doc.setDrawColor(200);
+    doc.line(
+      40,
+      totalsY + lineHeight * 4,
+      pageWidth - 40,
+      totalsY + lineHeight * 4
+    );
+    // Total Amount to Pay
+    doc.setFontSize(14);
+    doc.setTextColor(80, 80, 80); // dark gray
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Total Amount to Pay:`, totalsX, totalsY + lineHeight * 5 + 5);
+    doc.setTextColor(255, 0, 0); // red
+    doc.text(
+      `$${invoiceData.amountoPay.toFixed(2)}`,
+      pageWidth - 40,
+      totalsY + lineHeight * 5 + 5,
+      { align: 'right' }
+    );
+    
+    
+    // // Footer
+    // doc.setFontSize(10);
+    // doc.setFont('helvetica', 'normal');
+    // doc.setTextColor(0);
+    // doc.text(
+    //   'Note: Decoration items will be collected within 7 days.',
+    //   pageWidth/2,
+    //   totalsY + 200,{ align: 'center' }
+    // );
+    // doc.text(
+    //   'For inquiries, contact: info@decorservices.com',
+    //   pageWidth/2,
+    //   totalsY + 215,{ align: 'center' }
+    // );
 
-    autoTable(doc, {
-      head: [['Name of the Service', 'Rate', { content: 'Quantity', styles: { halign: 'center' } }, { content: 'Amount', styles: { halign: 'right' } }]],
-      body: [
-      ['Service of Pet Waste Station', '$' + invoiceData.costPerPetStations, invoiceData.totalPetStations, '$' + (invoiceData.costPerPetStations * invoiceData.totalPetStations).toFixed(2)],
-      ['Garbage Bins', '$' + invoiceData.costPerGarbageBins, invoiceData.totalGarbageBins, '$' + (invoiceData.costPerGarbageBins * invoiceData.totalGarbageBins).toFixed(2)],
-      ['Replacement of 10 Gal. Bin', '$' + invoiceData.costPerBinReplaced, invoiceData.totalBinReplaced, '$' + (invoiceData.costPerBinReplaced * invoiceData.totalBinReplaced).toFixed(2)],
-      ['Hand Sanitizer Bottle Refill', '$' + invoiceData.costPerHandSanitizer, invoiceData.totalHandSanitizerReplaced, '$' + (invoiceData.costPerHandSanitizer * invoiceData.totalHandSanitizerReplaced).toFixed(2)],
-      ['Pet Waste Station Dispenser Bag Refills (200 rolls)', '$' + invoiceData.costPerBagReplaced, invoiceData.totalBagReplaced, '$' + (invoiceData.costPerBagReplaced * invoiceData.totalBagReplaced).toFixed(2)],
-      ['Tax (7%)', '--', '--', '$' + invoiceData.taxAmount.toFixed(2)],
-      ],
-      theme: 'striped',
-      headStyles: {
-      fillColor: '#343a40',
-      },
-      columnStyles: {
-      2: { halign: 'center' }, // Right align the quantity column
-      3: { halign: 'right' }, // Right align the amount column
-      }
-    });
-
-    autoTable(doc, {
-      body: [
-        [
-          {
-            content: 'Amount due:',
-            styles: {
-              halign: 'right',
-              fontSize: 14,
-            },
-          },
-        ],
-        [
-          {
-            content: '$'+(invoiceData.totalAmount +invoiceData.taxAmount).toFixed(2),
-            styles: {
-              halign: 'right',
-              fontSize: 20,
-              textColor: '#3366ff',
-            },
-          },
-        ],
-        [
-          {
-            content: 'status: ' + invoiceData.status,
-            styles: {
-              halign: 'right',
-            },
-          },
-        ],
-      ],
-      theme: 'plain',
-    });
-    doc.save(`Invoice_${invoiceData.id}.pdf`);
+    // Save
+    doc.save(`${invoiceData.invoiceNo}.pdf`);
   }
 
   // getTotalAmount(invoices:any[]): number {
   //   return invoices?.reduce((sum, inv) => sum + inv.totalAmount, 0) || 0;
   // }
-  getInvoiceStatus(invoices:any[]): string {
+  getInvoiceStatus(invoices: any[]): string {
     return invoices?.some((inv) => inv.status === 'pending')
       ? 'pending'
       : 'completed';
@@ -179,50 +209,53 @@ export class PdfMakeService {
   applyFilter(date: any) {
     let newDate = new Date(date);
     return (
-      (newDate.getMonth()+1)+"/"+(newDate.getDate()) + '/' + newDate.getFullYear()
+      newDate.getMonth() +
+      1 +
+      '/' +
+      newDate.getDate() +
+      '/' +
+      newDate.getFullYear()
     );
   }
 
-//   generatePDF(invoice: any) {
-//     const doc = new jsPDF();
+  //   generatePDF(invoice: any) {
+  //     const doc = new jsPDF();
 
-//     // Title
-//     doc.setFontSize(22);
-//     doc.text('Invoice', 14, 22);
+  //     // Title
+  //     doc.setFontSize(22);
+  //     doc.text('Invoice', 14, 22);
 
-//     // Add invoice details
-//     doc.setFontSize(12);
-//     doc.text(`Invoice Date: ${invoice.invoiceDate}`, 14, 40);
-//     doc.text(`Status: ${invoice.status}`, 14, 50);
-    
-//     // Community details
-//     doc.text('Community Details:', 14, 70);
-//     doc.text(`Community Name: ${invoice.community.communityName}`, 14, 80);
-//     doc.text(`Address: ${invoice.community.communityAddress}`, 14, 90);
-//     doc.text(`Phone: ${invoice.community.phone}`, 14, 100);
-//     doc.text(`Email: ${invoice.community.email}`, 14, 110);
+  //     // Add invoice details
+  //     doc.setFontSize(12);
+  //     doc.text(`Invoice Date: ${invoice.invoiceDate}`, 14, 40);
+  //     doc.text(`Status: ${invoice.status}`, 14, 50);
 
-//     // Add a horizontal line
-//     doc.line(14, 115, 200, 115);
+  //     // Community details
+  //     doc.text('Community Details:', 14, 70);
+  //     doc.text(`Community Name: ${invoice.community.communityName}`, 14, 80);
+  //     doc.text(`Address: ${invoice.community.communityAddress}`, 14, 90);
+  //     doc.text(`Phone: ${invoice.community.phone}`, 14, 100);
+  //     doc.text(`Email: ${invoice.community.email}`, 14, 110);
 
-//     // Table of Costs
-//     autoTable(doc, {
-//       head: [['Item', 'Quantity', 'Cost per Unit', 'Total']],
-//       body: [
-//         ['Garbage Bins', invoice.totalGarbageBins, invoice.costPerGarbageBins, invoice.totalGarbageBins * invoice.costPerGarbageBins],
-//         ['Pet Stations', invoice.totalPetStations, invoice.costPerPetStations, invoice.totalPetStations * invoice.costPerPetStations],
-//         ['Bag Replacements', invoice.totalBagReplaced, invoice.costPerBagReplaced, invoice.totalBagReplaced * invoice.costPerBagReplaced],
-//       ],
-//       startY: 120,
-//     });
+  //     // Add a horizontal line
+  //     doc.line(14, 115, 200, 115);
 
-//     // Total Amount
-//     doc.setFontSize(12);
-//     doc.text(`Total Amount: $${invoice.totalAmount}`, 14, doc.autoTable.previous.finalY + 10);
+  //     // Table of Costs
+  //     autoTable(doc, {
+  //       head: [['Item', 'Quantity', 'Cost per Unit', 'Total']],
+  //       body: [
+  //         ['Garbage Bins', invoice.totalGarbageBins, invoice.costPerGarbageBins, invoice.totalGarbageBins * invoice.costPerGarbageBins],
+  //         ['Pet Stations', invoice.totalPetStations, invoice.costPerPetStations, invoice.totalPetStations * invoice.costPerPetStations],
+  //         ['Bag Replacements', invoice.totalBagReplaced, invoice.costPerBagReplaced, invoice.totalBagReplaced * invoice.costPerBagReplaced],
+  //       ],
+  //       startY: 120,
+  //     });
 
-//     // Save the PDF
-//     doc.save('invoice.pdf');
-//   }
+  //     // Total Amount
+  //     doc.setFontSize(12);
+  //     doc.text(`Total Amount: $${invoice.totalAmount}`, 14, doc.autoTable.previous.finalY + 10);
 
-
+  //     // Save the PDF
+  //     doc.save('invoice.pdf');
+  //   }
 }

@@ -34,4 +34,14 @@ export class EventScheduleService {
   public completeEventSchedule(id: number): Observable<any> {
     return this.http.post(EventScheduleUrls.COMPLETE, { id: id });
   }
+  public getAllEventSummaryForToday(queryParams: Map<string, any>): Observable<any> {
+    let params = new HttpParams();
+    params = params.append('status', 'active');
+    params = params.append('scheduledDate', queryParams.get('scheduledDate'));
+    return this.http.get(EventScheduleUrls.GET_SUMMARY, { params: params });
+  }
+
+  public updateUsedItem(payload: any): Observable<any> {
+    return this.http.post(EventScheduleUrls.UPDATE_ITEM, payload);
+  }
 }
