@@ -28,16 +28,20 @@
     <div class="billing">
         <h3>Billing Summary</h3>
         <div class="billing-row">
-            <span>Total Bill:</span>
-            <strong>{{ invoice.totalBill | currency }}</strong>
+            <span>Sub Total:</span>
+            <strong>{{ invoice.subtotal | currency }}</strong>
+        </div>
+        <div class="billing-row">
+            <span>Total Bill (+ 7% tax):</span>
+            <strong>{{ invoice.total | currency }}</strong>
         </div>
         <div class="billing-row">
             <span>Total Paid:</span>
-            <strong>{{ invoice.totalPaid | currency }}</strong>
+            <strong>{{ invoice.paid | currency }}</strong>
         </div>
         <div class="billing-row due">
             <span>Total Due:</span>
-            <strong>{{ invoice.totalDue | currency }}</strong>
+            <strong>{{ invoice.amountoPay | currency }}</strong>
         </div>
     </div>
 </mat-card>

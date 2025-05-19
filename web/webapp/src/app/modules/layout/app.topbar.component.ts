@@ -43,7 +43,11 @@ export class AppTopBarComponent implements OnInit {
     private datePipe: DatePipe
   ) {}
   ngOnInit() {
-    this.getAllEventSchedule();
+    this.getAllNotification();
+    this.eventScheduleService.notificationEventEmitter.subscribe((data: any) => {
+      this.getAllNotification();
+    });
+    
   }
 
   logout() {
@@ -52,26 +56,36 @@ export class AppTopBarComponent implements OnInit {
     this.router.navigate(['auth']);
   }
 
-  getAllEventSchedule() {
-    const params: Map<string, any> = new Map();
-    params.set('status', 'active');
-    params.set('scheduledDate', this.today);
-    this.eventScheduleService.getAllEventSchedule(params).subscribe({
+  getAllNotification() {
+    this.eventScheduleService.getAllNotification().subscribe({
       next: (res) => {
         console.log('Event List:', res);
-        let events = res.body;
-        this.notificationCount = events.length;
-        this.eventList = events.map((event: EventData) => ({
-          ...event,
-          scheduledDate: this.datePipe.transform(
-            event.scheduledDate,
-            'yyyy-MM-dd'
-          ),
-        }));
+        this.eventList = res.body;
+        this.notificationCount = this.eventList.length;
       },
       error: (err) => {
         console.error('Error fetching event list:', err);
       },
     });
+  }
+  markAsRead(id:any){
+    let ids:number[]=[];
+    ids.push(id);
+    this.eventScheduleService.markAsRead(ids).subscribe({
+      next:(res)=>{
+        console.log(res);
+        this.getAllNotification();
+      }
+    })
+  }
+
+  markAllAsRead(){
+    let ids:number[]= this.eventList.map((event)=>event.id);
+    this.eventScheduleService.markAsRead(ids).subscribe({
+      next:(res)=>{
+        console.log(res);
+        this.getAllNotification();
+      }
+    })
   }
 }

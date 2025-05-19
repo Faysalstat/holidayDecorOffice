@@ -53,7 +53,7 @@ export class PdfMakeService {
   generateInvoice(invoiceData: any): void {
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
     const pageWidth = doc.internal.pageSize.getWidth();
-    doc.addImage('assets/img/holiday-decor-logo.png', 'PNG', 30, 30, 60, 60); // Increased the size of the logo
+    doc.addImage('assets/img/christmas-icon.png', 'PNG', 30, 30, 60, 60); // Increased the size of the logo
     // Header
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
@@ -64,10 +64,10 @@ export class PdfMakeService {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.text('123 Festive Street', 110, 60, { align: 'left' });
-    doc.text('Phone: (555) 123-4567', 110, 75, { align: 'left' });
-    doc.text('Email: info@decorservices.com', 110, 90, {
-      align: 'left',
-    });
+    doc.text('Phone: (+14) 074174915', 110, 75, { align: 'left' });
+    // doc.text('Email: info@decorservices.com', 110, 90, {
+    //   align: 'left',
+    // });
 
     // Line
     doc.setDrawColor(200);

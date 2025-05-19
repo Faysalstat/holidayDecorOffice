@@ -22,7 +22,7 @@
         border-radius: 12px;
 
         img {
-            height: 5.5rem;
+            height: 5.3rem;
             margin-right: .5rem;
             padding: 2px;
         }
@@ -147,4 +147,7 @@
             }
         }
     }
+}
+.event-item{
+    cursor: pointer;
 }

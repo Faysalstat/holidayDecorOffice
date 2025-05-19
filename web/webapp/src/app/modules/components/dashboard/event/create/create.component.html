@@ -41,25 +41,41 @@
                         matInput></textarea>
                 </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Total Job Cost</mat-label>
+                    <span appCurrency matTextPrefix>$ &nbsp;</span>
+                    <input [readonly]="isEdit" placeholder="Total Bill" (input)="onInputTotalCost()" [ngModelOptions]="{standalone:true}" [(ngModel)]="totalCost" matInput>
+                </mat-form-field>
+            </div>
+            <div class="col-md-2">
+                <mat-form-field class="input-field" appearance="outline">
+                    <mat-label>Tax (7%)</mat-label>
+                    <span appCurrency matTextPrefix>$ &nbsp;</span>
+                    <input [readonly]="true" [ngModelOptions]="{standalone:true}" [(ngModel)]="tax" matInput>
+                </mat-form-field>
+            </div>
+            
+            <div class="col-md-2">
                 <mat-form-field class="input-field" appearance="outline">
                     <mat-label>Total Bill</mat-label>
                     <span appCurrency matTextPrefix>$ &nbsp;</span>
-                    <input placeholder="Title" (input)="calculateDueAmount()" [ngModelOptions]="{standalone:true}" [(ngModel)]="totalBill" matInput>
+                    <input [readonly]="true" [ngModelOptions]="{standalone:true}" [(ngModel)]="totalBill" matInput>
                 </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <mat-form-field class="input-field" appearance="outline">
-                    <mat-label>{{isEdit?"Deposit":"Advance Payment"}}</mat-label>
+                    <mat-label>Deposit</mat-label>
                     <span appCurrency matTextPrefix>$ &nbsp;</span>
-                    <input placeholder="Title" (input)="calculateDueAmount()" [ngModelOptions]="{standalone:true}" [(ngModel)]="deposit" matInput>
+                    <input placeholder="Deposit" (input)="calculateDueAmount()" 
+                    [ngModelOptions]="{standalone:true}" [(ngModel)]="totalPaid" matInput>
                 </mat-form-field>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <mat-form-field class="input-field" appearance="outline">
                     <mat-label>Due Amount</mat-label>
                     <span appCurrency matTextPrefix>$ &nbsp;</span>
-                    <input placeholder="Title" [readonly]="true" [ngModelOptions]="{standalone:true}" [(ngModel)]="dueAmount" matInput>
+                    <input placeholder="Due Amount" [readonly]="true" [ngModelOptions]="{standalone:true}" [(ngModel)]="dueAmount" matInput>
                 </mat-form-field>
             </div>
         </div>

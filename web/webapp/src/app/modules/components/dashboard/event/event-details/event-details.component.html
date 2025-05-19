@@ -101,6 +101,7 @@
         <div class="row">
             <h2 class="text-left mt-4">Images</h2>
             <hr>
+            <p style="color: red;" class="text-center" *ngIf="uploadedImagesForPreview.length<=0">No Image available</p>
             <div class="col-md-4 mb-4" *ngFor="let image of uploadedImagesForPreview">
                 <div class="card shadow-sm">
                     <a [href]="image" target="_blank" rel="noopener noreferrer">

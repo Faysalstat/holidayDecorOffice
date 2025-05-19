@@ -39,26 +39,24 @@ export class InvoiceComponent {
       : 'bg-success';
   }
   downloadInvoice(): void {
+    console.log(this.invoice);
+    const paddedInvoiceId = String(this.invoice.id).padStart(4, '0');
     const invoiceData = {
-      invoiceNo: 'INV-2025-0012',
-      issueDate: '2025-05-09',
-      serviceDate: '2025-05-08',
+      invoiceNo: `INV-${paddedInvoiceId}`,
+      issueDate: this.invoice.invoiceDate,
+      serviceDate: `${this.invoice.scheduledStartDate} to ${this.invoice.scheduledEndDate}`,
       customer: {
-        name: 'John Smith',
-        address1: '789 Holiday Lane',
-        address2: 'Snowville, CA 90210'
+      name: this.invoice.communityName,
+      address1: this.invoice.communityAddress,
+      address2: this.invoice.email
       },
-      items: [
-        { name: 'LED String Lights', qty: 10, unitPrice: 15 },
-        { name: 'Christmas Tree Setup', qty: 1, unitPrice: 100 },
-        { name: 'Outdoor Wreaths', qty: 3, unitPrice: 25 }
-      ],
-      subtotal: 325,
-      taxRate: 10,
-      tax: 32.5,
-      total: 357.5,
-      paid:100,
-      amountoPay:237.5
+      items: this.invoice.items,
+      subtotal: this.invoice.subtotal,
+      taxRate: this.invoice.taxRate,
+      tax: this.invoice.tax,
+      total: this.invoice.total,
+      paid: this.invoice.paid,
+      amountoPay: this.invoice.amountoPay,
     };
 
     this.pdfMakeService.generateInvoice(invoiceData);

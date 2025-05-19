@@ -40,7 +40,9 @@ export class CreateComponent implements OnInit {
   communityList: any[] = [];
   showCommunityDetails: boolean = false;
   selectedCommunity: string = ''
+  totalCost:number = 0;
   totalBill:number = 0;
+  tax:number = 0;
   totalPaid:number = 0;
   deposit:number = 0;
   dueAmount:number = 0;
@@ -146,7 +148,9 @@ export class CreateComponent implements OnInit {
       this.communityId = eventData.communityId;
       this.scheduledStartDate = eventData.scheduledStartDate;
       this.scheduledEndDate = eventData.scheduledEndDate;
-      this.totalBill = eventData.totalBill;
+      this.totalCost = eventData.totalBill;
+      this.tax = this.totalCost * .07;
+      this.totalBill = this.totalCost + this.tax;
       this.totalPaid = eventData.totalPaid;
       this.dueAmount = this.totalBill - this.totalPaid;
       for (let index = 0; index < this.communityList.length; index++) {
@@ -290,6 +294,7 @@ export class CreateComponent implements OnInit {
           summary: 'Event Created',
           detail: 'Successfully Created',
         });
+        this.eventScheduleService.notificationEventEmitter.emit();
         this.router.navigate(["events/list"])
       },
       error: (err) => {
@@ -309,6 +314,7 @@ export class CreateComponent implements OnInit {
           summary: 'Event Updated',
           detail: 'Successfully Updated',
         });
+        this.eventScheduleService.notificationEventEmitter.emit();
         this.router.navigate(["events/list"])
       },
       error: (err) => {
@@ -320,11 +326,17 @@ export class CreateComponent implements OnInit {
       },
     })
   }
+  onInputTotalCost(){
+    this.totalCost = Number(this.totalCost) || 0;
+    this.tax = Number((this.totalCost * .07).toFixed(2));
+    this.totalBill = Number(this.totalCost + this.tax) || 0;
+    this.totalPaid = this.totalBill/2;
+    this.dueAmount = this.totalBill - this.totalPaid - this.deposit;
+  }
   calculateDueAmount() {
-    this.totalBill = Number(this.totalBill) || 0;
     this.totalPaid = Number(this.totalPaid) || 0;
     this.deposit = Number(this.deposit) || 0;
-    this.dueAmount = this.totalBill - this.totalPaid - this.deposit;
+    this.dueAmount = this.totalBill - this.totalPaid;
   }
 }
 

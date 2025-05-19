@@ -33,7 +33,8 @@ import { GallaryComponent } from './gallary/gallary.component';
         MaterialModule,
         SharedCompsModule,
         CardModule,
-        GalleriaModule
+        GalleriaModule,
+        ToastModule
     ],
     declarations: [DashboardComponent, AppConfigComponent, DecorationItemsComponent,GallaryComponent],
     providers:[MessageService,DatePipe]

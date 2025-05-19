@@ -8,11 +8,15 @@ const db = require("../connector/db-connector");
 const TransactionHisory = require("../model/transaction-history");
 const moment = require("moment-timezone");
 const { Op } = require("sequelize");
+const logger = require("../../logger");
+const Notification = require("../model/notification");
 
 exports.addEventSchedule = async (req) => {
   let payload = req.body;
   let createdEvent;
   let tnxHistory;
+  const year = new Date().getFullYear();
+  const randomNum = Math.floor(100000 + Math.random() * 900000); // 6 digit random number
   try {
     let eventModel = {
       status: "active",
@@ -22,7 +26,7 @@ exports.addEventSchedule = async (req) => {
       title: payload.title,
       description: payload.description,
       totalBill: payload.totalBill,
-      totalPaid: payload.totalPaid,
+      totalPaid: payload.totalPaid
     };
     let tnxModel = {
       amount: payload.deposit,
@@ -63,10 +67,13 @@ exports.addEventSchedule = async (req) => {
         });
       }
     }
+    await checkLowQuantityItemsAndSendNotification();
     let newEvent = await EventSchedule.findOne({
       where: { id: createdEvent.id },
       include: [EventImageMapping, EventItemMapping],
     });
+    // Pad createdEvent.id to 4 digits with leading zeros
+    const paddedId = String(createdEvent.id).padStart(4, '0');
     return newEvent;
   } catch (error) {
     let deletedTnxHistory = await TransactionHisory.destroy({
@@ -98,16 +105,18 @@ exports.updateEventSchedule = async (req, res, next) => {
         communityName: payload.communityName,
         title: payload.title,
         description: payload.description,
-        totalPaid:payload.totalPaid
+        totalPaid: payload.totalPaid,
       };
-      if(payload.deposit && payload.deposit>0){
+      if (payload.deposit && payload.deposit > 0) {
         let tnxModel = {
           amount: payload.deposit,
           tnxDate: moment().tz("America/New_York").format("MM-DD-YYYY"),
-          remark: "Advance Payment",
+          remark: "Deposit",
           communityId: payload.communityId,
         };
-        tnxHistory = await TransactionHisory.create(tnxModel, { transaction: t });
+        tnxHistory = await TransactionHisory.create(tnxModel, {
+          transaction: t,
+        });
       }
       let response = await EventSchedule.update(eventModel, {
         where: { id: payload.id },
@@ -156,7 +165,7 @@ exports.updateEventSchedule = async (req, res, next) => {
         include: [EventImageMapping, EventItemMapping],
       });
     });
-
+    await checkLowQuantityItemsAndSendNotification();
     return newEvent;
   } catch (error) {
     throw new Error("Not Updated: " + error.message);
@@ -166,39 +175,43 @@ exports.getAllEventSchedule = async (req) => {
   try {
     let params = req.query;
     let query = {};
-    if (params.status || params.status!='') {
+    if (params.status || params.status != "") {
       query.status = params.status.toLowerCase();
     }
-    if (params.scheduledDate && params.scheduledDate !== "" && query.status =='active') {
+    if (
+      params.scheduledDate &&
+      params.scheduledDate !== "" &&
+      query.status == "active"
+    ) {
       query[Op.and] = [
-      {
-        scheduledStartDate: {
-        [Op.lte]: params.scheduledDate,
+        {
+          scheduledStartDate: {
+            [Op.lte]: params.scheduledDate,
+          },
         },
-      },
-      {
-        scheduledEndDate: {
-        [Op.gte]: params.scheduledDate,
+        {
+          scheduledEndDate: {
+            [Op.gte]: params.scheduledDate,
+          },
         },
-      },
       ];
     }
     let response = await EventSchedule.findAll({
       where: query,
       include: [
-      { model: Community },
-      { model: EventImageMapping },
-      { model: EventItemMapping, include: DecorationItem },
+        { model: Community },
+        { model: EventImageMapping },
+        { model: EventItemMapping, include: DecorationItem },
       ],
       order: [
-      [
-        EventSchedule.sequelize.fn(
-        "STR_TO_DATE",
-        EventSchedule.sequelize.col("scheduledStartDate"),
-        "%m-%d-%Y"
-        ),
-        "ASC",
-      ],
+        [
+          EventSchedule.sequelize.fn(
+            "STR_TO_DATE",
+            EventSchedule.sequelize.col("scheduledStartDate"),
+            "%m-%d-%Y"
+          ),
+          "ASC",
+        ],
       ],
     });
     let eventList = [];
@@ -230,7 +243,7 @@ exports.getAllEventSchedule = async (req) => {
 
         eventList.push({
           id: event.id,
-          title:event.title,
+          title: event.title,
           scheduledStartDate: event.scheduledStartDate,
           scheduledEndDate: event.scheduledEndDate,
           communityName: event.community.communityName,
@@ -241,7 +254,7 @@ exports.getAllEventSchedule = async (req) => {
           uploadedImages: imageList,
           totalBill: event.totalBill,
           totalPaid: event.totalPaid,
-          status:event.status
+          status: event.status,
         });
       }
     }
@@ -298,7 +311,7 @@ exports.getEventScheduleById = async (params) => {
       uploadedImages: imageList,
       totalBill: response.totalBill,
       totalPaid: response.totalPaid,
-      status:response.status
+      status: response.status,
     };
   } catch (error) {
     throw new Error("Not Found: " + error.message);
@@ -338,19 +351,23 @@ exports.deleteEventSchedule = async (req, res, next) => {
   }
 };
 
-exports.completeEvent = async(req) => {
+exports.completeEvent = async (req) => {
   let params = req.body;
   try {
     let event = await EventSchedule.findOne({
-      where: { id: params.id }
+      where: { id: params.id },
     });
 
-    let usedItems = await EventItemMapping.findAll({ where: { eventScheduleId: params.id }, include: DecorationItem });
+    let usedItems = await EventItemMapping.findAll({
+      where: { eventScheduleId: params.id },
+      include: DecorationItem,
+    });
 
     if (usedItems && usedItems.length > 0) {
       for (let index = 0; index < usedItems.length; index++) {
         const usedItem = usedItems[index];
-        const updatedQuantity = usedItem.decorationItem.quantity + usedItem.usedQuantity;
+        const updatedQuantity =
+          usedItem.decorationItem.quantity + usedItem.usedQuantity;
 
         await DecorationItem.update(
           { quantity: updatedQuantity },
@@ -361,11 +378,10 @@ exports.completeEvent = async(req) => {
     event.status = "completed";
     event.save();
     return "completed";
-
   } catch (error) {
     throw new Error("Event Not complted. Error: " + error.message);
   }
-}
+};
 
 exports.getEventScheduledSummary = async (req) => {
   let params = req.query;
@@ -421,18 +437,26 @@ exports.getEventScheduledSummary = async (req) => {
         let itemList = [];
 
         if (event.eventImageMappings && event.eventImageMappings.length > 0) {
-          for (let imgIndex = 0; imgIndex < event.eventImageMappings.length; imgIndex++) {
+          for (
+            let imgIndex = 0;
+            imgIndex < event.eventImageMappings.length;
+            imgIndex++
+          ) {
             const imageMap = event.eventImageMappings[imgIndex].dataValues;
             imageList.push(imageMap.imageName);
           }
         }
 
         if (event.eventItemMappings && event.eventItemMappings.length > 0) {
-          for (let itemIndex = 0; itemIndex < event.eventItemMappings.length; itemIndex++) {
+          for (
+            let itemIndex = 0;
+            itemIndex < event.eventItemMappings.length;
+            itemIndex++
+          ) {
             const itemMap = event.eventItemMappings[itemIndex].dataValues;
             const usedItem = {
               itemName: itemMap.decorationItem.itemName,
-              requiredQuantity:itemMap.requiredQuantity,
+              requiredQuantity: itemMap.requiredQuantity,
               usedQuantity: itemMap.usedQuantity,
               unitType: itemMap.decorationItem.unitType,
             };
@@ -470,22 +494,48 @@ exports.getEventScheduledSummary = async (req) => {
   } catch (error) {
     throw new Error("Summary Fetching Failed. Error: " + error.message);
   }
-}
+};
 exports.updateItemMapping = async (req) => {
   let payload = req.body;
   try {
-    if(payload.items && payload.items.length>0){
+    if (payload.items && payload.items.length > 0) {
       for (let index = 0; index < payload.items.length; index++) {
         const element = payload.items[index];
-        let itemMappingToUpdate = await EventItemMapping.findOne({where:{decorationItemId :element.itemId,eventScheduleId : payload.eventId}});
-        itemMappingToUpdate.usedQuantity = itemMappingToUpdate.usedQuantity + element.newQuantityUsed;
+        let itemMappingToUpdate = await EventItemMapping.findOne({
+          where: {
+            decorationItemId: element.itemId,
+            eventScheduleId: payload.eventId,
+          },
+        });
+        itemMappingToUpdate.usedQuantity =
+          itemMappingToUpdate.usedQuantity + element.newQuantityUsed;
         itemMappingToUpdate.save();
       }
     }
-    
-    return "SUCCESS"
+
+    return "SUCCESS";
   } catch (error) {
     throw new Error("Update Failed. Error: " + error.message);
   }
-}
+};
 
+const checkLowQuantityItemsAndSendNotification = async () => {
+  try {
+    let lowQuanityItems = await DecorationItem.findAll({ where: { quantity: { [Op.lt]: 10 } } });
+    if (lowQuanityItems.length>0){
+      for(let i =0;i<lowQuanityItems.length;i++){
+        let item = lowQuanityItems[i];
+        let notificationModel = {
+          title: "Low Stock Alert",
+          content: `"${item.itemName}" has only ${item.quantity} units remaining in inventory. Please restock soon.`,
+          isViewed: false
+        };
+        let response = await Notification.create(notificationModel);
+      }
+    }
+  } catch (error) {
+    logger.error(`Error occurred on SMS: ${error.message}`, {
+      stack: error.stack,
+    });
+  }
+};

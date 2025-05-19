@@ -177,6 +177,7 @@ export class EventDetailsComponent implements OnInit {
   }
   showInvoice(){
     let invoice = {
+      id: this.eventDetails.id,
       title:this.eventDetails.title,
       scheduledStartDate:  this.eventDetails.scheduledStartDate,
       scheduledEndDate:  this.eventDetails.scheduledEndDate,
@@ -185,9 +186,13 @@ export class EventDetailsComponent implements OnInit {
       communityAddress: this.communityDetails.communityAddress,
       phone:  this.communityDetails.phone,
       email: this.communityDetails.email,
-      totalBill: this.eventDetails.totalBill,
-      totalPaid: this.eventDetails.totalPaid,
-      totalDue: (this.eventDetails?.totalBill - this.eventDetails?.totalPaid),
+      items: this.usedItemList,
+      subtotal: this.eventDetails.totalBill,
+      taxRate: 7,
+      tax: this.eventDetails.totalBill*.07,
+      total: this.eventDetails.totalBill + (this.eventDetails.totalBill*.07),
+      paid: this.eventDetails.totalPaid,
+      amountoPay: ((this.eventDetails.totalBill + (this.eventDetails.totalBill*.07)) - this.eventDetails?.totalPaid)
     };
     this.dialog.open(InvoiceComponent, {
       width: '800px',

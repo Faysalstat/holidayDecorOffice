@@ -33,7 +33,7 @@
     "nodemailer": "^6.10.0",
     "request": "^2.88.2",
     "sequelize": "^6.20.1",
-    "socket.io": "^4.4.1",
+    "socket.io": "^4.8.1",
     "socket.io-client": "^4.4.1",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",

@@ -23,7 +23,7 @@ exports.updateDecorationItem = async (req)=>{
     try {
         let itemModel = {
             itemName: payload.itemName,
-            quantity:payload.quanity || 0,
+            quantity:payload.quantity || 0,
             costPrice:payload.costPrice || 0,
             quantityWasted:payload.quantityWasted || 0,
             unitType:payload.unitType || "PIECE"

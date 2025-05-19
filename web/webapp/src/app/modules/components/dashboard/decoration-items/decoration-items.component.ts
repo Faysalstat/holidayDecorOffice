@@ -51,6 +51,14 @@ export class DecorationItemsComponent implements OnInit {
 
   createItems(){
     let payload = this.item;
+    if(!payload.itemName || payload.itemName ==''){
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: "Invalid Form. Please input all values",
+      });
+      return;
+    }
     if(this.isEdit){
       console.log("Update item Model", payload)
       this.decorationItemService.updateDecorationItem(payload).subscribe({
@@ -63,6 +71,7 @@ export class DecorationItemsComponent implements OnInit {
          });
          this.item.quantity = 0;
          this.item.itemName= '';
+         this.getAllItems();
        },
        error: (err) => {
          this.messageService.add({
@@ -83,6 +92,7 @@ export class DecorationItemsComponent implements OnInit {
          });
          this.item.quantity = 0;
          this.item.itemName= '';
+         this.getAllItems();
        },
        error: (err) => {
          this.messageService.add({
@@ -93,7 +103,7 @@ export class DecorationItemsComponent implements OnInit {
        },
      })
     }
-    this.getAllItems();
+    
   }
   onEdit(item:any){
     this.item = {

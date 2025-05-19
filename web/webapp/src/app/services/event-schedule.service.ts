@@ -1,12 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EventScheduleUrls } from '../utils/urls.const';
+import { EventScheduleUrls, NotificationUrls } from '../utils/urls.const';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventScheduleService {
+  notificationEventEmitter:EventEmitter<any> = new EventEmitter();
   constructor(private http: HttpClient) {}
   public createEventSchedule(payload: any): Observable<any> {
     return this.http.post(EventScheduleUrls.CREATE, payload);
@@ -43,5 +44,13 @@ export class EventScheduleService {
 
   public updateUsedItem(payload: any): Observable<any> {
     return this.http.post(EventScheduleUrls.UPDATE_ITEM, payload);
+  }
+
+  public getAllNotification(): Observable<any>{
+    return this.http.get(NotificationUrls.GETALL);
+  }
+
+  public markAsRead(ids:number[]): Observable<any> {
+    return this.http.post(NotificationUrls.READ, {ids:ids});
   }
 }

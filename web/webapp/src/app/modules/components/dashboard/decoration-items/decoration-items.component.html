@@ -1,4 +1,5 @@
 <div class="container bg-white mt-4">
+    <p-toast [breakpoints]="{ '920px': { width: '100%', right: '0', left: '0' } }" />
     <div class="mt-4 p-5 rounded">
         <div class="d-flex align-items-center justify-content-between">
             <h2>Decoration Items</h2>
@@ -8,7 +9,7 @@
             <div class="col-md-3">
                 <mat-form-field class="input-field" appearance="outline">
                     <mat-label>Item Name</mat-label>
-                    <input placeholder="Config Name" [(ngModel)]="item.itemName"
+                    <input placeholder="Item Name" [required]="true" [(ngModel)]="item.itemName"
                         matInput />
                 </mat-form-field>
             </div>

@@ -40,16 +40,22 @@
         </div>
   
         <!-- Modal body -->
-        <div class="modal-body">
+        <div class="modal-body" style="max-height: 300px; overflow-y: auto;">
             <ul class="list-group list-group-flush">
-                <p *ngIf="eventList?.length == 0" class="text-center">No Event Scheduled</p>
-                <li *ngFor="let event of eventList" class="list-group-item event-item">
-                    <h4 style="margin: 0; font-weight: bold; color: #28a745;">{{event.title}}</h4>
-                    <p style="margin: 5px 0 0; color: #555;">{{event.description}}</p>
-                </li>
+            <p *ngIf="eventList?.length == 0" class="text-center">No Event Scheduled</p>
+            <div style="text-align: right; margin-bottom: 10px;">
+                <button type="button" class="btn btn-primary" (click)="markAllAsRead()">Read All</button>
+            </div>
+            <li *ngFor="let event of eventList" 
+                class="list-group-item event-item" 
+                (click)="markAsRead(event.id)" 
+                [ngStyle]="{'background-color': event.isViewed === false ? '#f8f9fa' : 'transparent'}" 
+                style="cursor: pointer;">
+                <h4 style="margin: 0; font-weight: bold; color: #28a745;">Warning</h4>
+                <p style="margin: 5px 0 0; color: #555;">{{event.content}}</p>
+            </li>
             </ul>
         </div>
-  
         <!-- Modal footer -->
         <!-- <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>

@@ -56,6 +56,8 @@ const communityRoute = require("./src/router/community-route");
 const eventRoute = require("./src/router/event-route");
 const itemsRoute = require("./src/router/decoration-items-route");
 const uploadRoute = require("./src/router/upload-file-route");
+const schedulerRoute = require("./src/router/scheduler-route");
+const notificationRoute = require("./src/router/notification-route");
 const path = require("path");
 app.get("/api", (req, res) => {
   res.send("Welcome to my Node API!");
@@ -66,6 +68,8 @@ app.use("/api/community", communityRoute);
 app.use("/api/event", eventRoute);
 app.use("/api/items", itemsRoute);
 app.use("/api/file-upload", uploadRoute);
+app.use("/api/scheduler", schedulerRoute);
+app.use("/api/notification", notificationRoute);
 app.get("/api/stayawake", (req, res) => {
   const now = moment().tz("America/New_York").format("MM-DD-YYYY HH:mm:ss");
   res.send("I am Awake at " + now);

@@ -20,13 +20,11 @@
             <h4 style="font-size: 1.2rem; color: #555; margin-top: 10px;">{{ getFormattedDate() }}</h4>
             <hr />
         </div>
-        <div class="col-md-4" *ngFor="let event of eventList" >
+        <div class="col-md-4" *ngFor="let event of eventList">
             <div class="card event-card">
-                <div class="card-body" style="padding: 1rem;">
-                    <h5 class="card-title" style="margin: 0; font-size: 1.25rem; font-weight: bold;">{{
-                        event.communityName }}</h5>
-                    <h6 class="card-subtitle" style="margin: 0.5rem 0; font-size: 1rem; color: #666;">{{event.title}}
-                    </h6>
+                <div class="card-body" style="padding: 1rem; height: 150px; overflow-y: auto;">
+                    <h5 class="card-title" style="margin: 0; font-size: 1.25rem; font-weight: bold;">{{ event.communityName }}</h5>
+                    <h6 class="card-subtitle" style="margin: 0.5rem 0; font-size: 1rem; color: #666;">{{event.title}}</h6>
                     <p style="margin: 0; color: #555;">
                         {{event.description}}
                     </p>
